@@ -3,7 +3,7 @@
 
 ## Created by
 
-- [Adam Kuszczyñski](https://github.com/juhum)
+- [Adam KuszczyÅ„ski](https://github.com/juhum)
 - [@github_handle2](https://github.com/github_handle2)
 - [@github_handle3](https://github.com/github_handle3)
 - [@github_handle1](https://github.com/github_handle4)
