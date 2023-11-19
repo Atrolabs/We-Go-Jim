@@ -21,9 +21,14 @@ resource "aws_cognito_user_pool" "we-go-jim" {
     required           = false
   }
 
-  auto_verified_attributes = ["email"]
-  email_verification_subject = "Verify your email for We Go Jim"
-  email_verification_message = "Please click the following link to verify your email address: {####}"
+  auto_verified_attributes     = ["email"]
+  email_verification_subject   = "Verify your email for We Go Jim"
+  email_verification_message   = "Please click the following link to verify your email address: {####}"
+  mfa_configuration            = "OFF"
+}
 
-  mfa_configuration = "OFF"
+resource "aws_cognito_user_pool_client" "we-go-jim-client" {
+  name                    = "we-go-jim-client"
+  user_pool_id            = aws_cognito_user_pool.we-go-jim.id
+  generate_secret         = true
 }
