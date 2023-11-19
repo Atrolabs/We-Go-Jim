@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link rel="stylesheet" href="style.css">
+    <script src="../static/js/register.js">
+    </script>
 </head>
 <body>
     <div class="container">
@@ -14,10 +16,7 @@
                 <label for="email">Email Address</label>
                 <input type="email" class="form-control" id="email" name="email" placeholder="Enter email"/>
             </div>
-            <div class="form-group">
-                <label for="nickName">Nickname</label>
-                <input type="text" class="form-control" id="nickName" name="nickName" placeholder="Enter nickname"/>
-            </div>
+
             <div class="form-group">
                 <label for="password1">Password</label>
                 <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter password"/>
@@ -28,7 +27,12 @@
             </div>
 
             <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="isTrainer" name="isTrainer">
+                <input type="checkbox" class="form-check-input" id="isStudent" name="isStudent" onclick="toggleCheckboxes('isStudent')" checked>
+                <label class="form-check-label" for="isStudent">I am a Student</label>
+            </div>
+            
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="isTrainer" name="isTrainer" onclick="toggleCheckboxes('isTrainer')">
                 <label class="form-check-label" for="isTrainer">I am a Trainer</label>
             </div>
 
