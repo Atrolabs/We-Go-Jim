@@ -1,1 +1,1 @@
-pass
+from .cognito_utils import calculate_secret_hash

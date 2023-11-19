@@ -1,38 +1,90 @@
 import boto3
 from botocore.exceptions import ClientError
-from config.config_loader import USER_POOL_ID, CLIENT_ID, APP_CLIENT_SECRET
+from config.config_loader import USER_POOL_ID, APP_CLIENT_ID, APP_CLIENT_SECRET
+from utils.cognito_utils import calculate_secret_hash
 
-class CognitoService:
+class CognitoService():
+    """
+    A class representing a service for interacting with Amazon Cognito for user registration.
+
+    Attributes:
+        - user_pool_id (str): The ID of the Cognito user pool.
+        - app_client_id (str): The app client ID associated with the Cognito user pool.
+        - app_client_secret (str): The app client secret associated with the Cognito app client.
+        - client (boto3.client): An instance of the Boto3 Cognito Identity Provider client.
+
+    Methods:
+        - register_user(email: str, password: str, user_type: str) -> dict:
+            Registers a new user in the Cognito user pool.
+
+            Parameters:
+                - email (str): The email address of the user.
+                - password (str): The password for the user.
+                - user_type (str): The type of the user.
+
+            Returns:
+                - dict: A dictionary containing the response from the Cognito service.
+
+            Raises:
+                - Exception: If an error occurs during user registration.
+
+            Example:
+                ```python
+                cognito_service = CognitoService()
+                response = cognito_service.register_user(email="user@example.com", password="password123", user_type="standard")
+                print(response)
+                ```
+
+            Note:
+                Make sure to handle exceptions appropriately when calling this method.
+    """
+
     def __init__(self):
         """
-        Initialize a CognitoService instance.
+        Initializes a new instance of the CognitoService class.
         """
         self.user_pool_id = USER_POOL_ID
-        self.client_id = CLIENT_ID
-        self.client_secret = APP_CLIENT_SECRET
+        self.app_client_id = APP_CLIENT_ID
+        self.app_client_secret = APP_CLIENT_SECRET
         self.client = boto3.client('cognito-idp', region_name='eu-central-1')
 
-    def register_user(self, email, password, user_type):
+    def register_user(self, email: str, password: str, user_type: str) -> dict:
         """
-        Register a new user in the Cognito User Pool.
+        Registers a new user in the Cognito user pool.
 
-        :param email: The email address for the new user.
-        :param password: The password for the new user.
-        :param user_type: The user type as a string.
+        Parameters:
+            - email (str): The email address of the user.
+            - password (str): The password for the user.
+            - user_type (str): The type of the user.
 
-        :return: If successful, returns a dictionary with user details.
-                 If unsuccessful, raises an exception with an error message.
+        Returns:
+            - dict: A dictionary containing the response from the Cognito service.
+
+        Raises:
+            - Exception: If an error occurs during user registration.
+
+        Example:
+            ```python
+            cognito_service = CognitoService()
+            response = cognito_service.register_user(email="user@example.com", password="password123", user_type="Student")
+            print(response)
+            ```
+
+        Note:
+            Make sure to handle exceptions appropriately when calling this method.
         """
         try:
-            user_attributes = [{'Name': 'email', 'Value': email}, {'Name': 'user_type', 'Value': user_type}]
+            user_attributes = [{'Name': 'email', 'Value': email}, {'Name': 'custom:user_type', 'Value': user_type}]
+
+            secret_hash = calculate_secret_hash(APP_CLIENT_SECRET, APP_CLIENT_ID, email)
             
             response = self.client.sign_up(
-                ClientId=self.client_id,
+                ClientId=self.app_client_id,
+                SecretHash=secret_hash,  
                 Username=email,  # Use email as the username
                 Password=password,
                 UserAttributes=user_attributes
             )
-            
             return response
         except ClientError as e:
             raise Exception(f"Error registering user: {e}")

@@ -4,33 +4,26 @@ document.addEventListener('DOMContentLoaded', function () {
     form.addEventListener('submit', function (event) {
         event.preventDefault();
 
-        let userRole;
-        if (document.getElementById('isTrainer').checked) {
-            userRole = 'Trainer';
-        } else if (document.getElementById('isStudent').checked) {
-            userRole = 'Student';
-        }
+        const userRole = document.getElementById('isTrainer').checked ? 'Trainer' : 'Student';
 
-        // Create a form data object from the form element
         const formData = new FormData(form);
-
-        // Convert the form data object to a JSON object
         const jsonData = Object.fromEntries(formData.entries());
 
-        // Send JSON data to the server
-        fetch('/submit', {
+        // Update the key for user role to match the server-side expectation
+        jsonData.userRole = userRole;
+
+        fetch('/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(jsonData),
+            body: JSON.stringify(jsonData),  // Send the updated JSON data
         })
         .then(response => response.json())
         .then(data => console.log(data))
         .catch(error => console.error('Error:', error));
     });
 });
-
 
 function toggleCheckboxes(checkboxId) {
     const checkboxes = ['isTrainer', 'isStudent'];
