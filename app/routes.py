@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template, request, jsonify
+from services.cognito_service import CognitoService  # Import the CognitoService
 
 home_bp = Blueprint("home", __name__)
 login_bp = Blueprint("login", __name__)
 register_bp = Blueprint("register", __name__)
-submit_bp = Blueprint("submit", __name__)
+
+cognito_service = CognitoService()  # Create an instance of CognitoService
 
 @home_bp.route('/', methods=['GET'])
 def home():
@@ -15,18 +17,20 @@ def login():
 
 @register_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    return render_template("register.html")
+    if request.method == 'POST':
+        try:
+            data = request.json  # Use request.json to handle JSON data
+            email = data.get('email')
+            password = data.get('password1')
+            user_type = 'Trainer' if data.get('isTrainer') else 'Student'
 
-@submit_bp.route('/submit', methods=['POST'])
-def submit():
-    data = {}
+            response = cognito_service.register_user(email, password, user_type)
 
-    # Get the JSON data from the request
-    json_data = request.json
+            # Note: For debugging purposes only. Remove the following line in production.
+            print(response)
 
-    data['role'] = 'Trainer' if json_data.get('isTrainer') else 'Student'
+            return jsonify({'success': True, 'message': 'User registered successfully'})
+        except Exception as e:
+            return jsonify({'success': False, 'message': str(e)})
 
-    #print(data)
-    print(json_data)
-
-    return 'Form submitted successfully!'
+    return render_template("register.html") 
