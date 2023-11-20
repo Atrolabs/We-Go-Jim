@@ -53,6 +53,11 @@ resource "aws_cognito_user_pool_client" "we-go-jim-client" {
   name           = "we-go-jim-client"                        # Customize the client name here
   user_pool_id   = aws_cognito_user_pool.we-go-jim.id        # Get the user pool ID from resource reference
   generate_secret = true                                     # Generate the app client secret, necessary for user registration
+  explicit_auth_flows = [
+    "ALLOW_USER_PASSWORD_AUTH",                              # Allow user password authentication
+     "ALLOW_REFRESH_TOKEN_AUTH"                              # Allow refresh token authentication
+     ]          
+
 }
 
 # Create an AWS Cognito User Pool Domain(necessary to send verification link instead of a code)

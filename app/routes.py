@@ -15,8 +15,56 @@ def home():
     return render_template("index.html")
 
 @login_bp.route('/login', methods=['GET', 'POST'])
-def login():
+def login() -> Union[str, Dict[str, Union[bool, str]]]:
+    """
+    Render the login page for `GET` requests and handle user login for POST requests.
+
+    Returns:
+        - For `GET` requests, returns the rendered `HTML` template for the login page.
+        - For `POST` requests:
+            - If login is successful, returns a `JSON` response indicating success.
+            - If an error occurs during login, returns a `JSON` response indicating failure.
+
+    Raises:
+        Exception: If an unexpected error occurs during user login.
+
+    Example:
+          To render the login page:
+            ```python
+            result = login()  # GET request
+            ```
+
+          To handle user login:
+            ```python
+            data = {
+                'email': 'user@example.com',
+                'password': 'Password#123',
+            }
+            result = login(request_data=data)  # POST request
+            ```
+
+    Note:
+        - This function expects `JSON` data for `POST` requests. The `JSON` should contain 'email' and 'password' keys.
+    """
+    if request.method == 'POST':
+        try:
+            data = request.json
+            email = data.get('email')
+            password = data.get('password')
+
+            # Call your CognitoService method for login here
+            response = cognito_service.login_user(email, password)
+
+            # Note: For debugging purposes only. Remove the following line in production.
+            print(response)
+
+            # Handle login response
+            return jsonify({'success': True, 'message': 'User logged in successfully'})
+        except Exception as e:
+            return jsonify({'success': False, 'message': str(e)})
+
     return render_template("login.html")
+
 
 @register_bp.route('/register', methods=['GET', 'POST'])
 def register() -> Union[str, Dict[str, Union[bool, str]]]:
@@ -42,7 +90,7 @@ def register() -> Union[str, Dict[str, Union[bool, str]]]:
             ```python
             data = {
                 'email': 'user@example.com',
-                'password1': 'password123',
+                'password1': 'Password#123',
                 'isTrainer': False
             }
             result = register(request_data=data)  # POST request
@@ -63,7 +111,8 @@ def register() -> Union[str, Dict[str, Union[bool, str]]]:
 
             # Note: For debugging purposes only. Remove the following line in production.
             print(response)
-
+            
+            # Handle register response
             return jsonify({'success': True, 'message': 'User registered successfully'})
         except Exception as e:
             return jsonify({'success': False, 'message': str(e)})
