@@ -1,1 +1,1 @@
-from .cognito_utils import calculate_secret_hash
+from .cognito_utils import calculate_secret_hash, decode_cognito_jwt

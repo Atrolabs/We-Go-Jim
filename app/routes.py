@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, session
 from services.cognito_service import CognitoService 
 from typing import Union, Dict
+from utils.cognito_utils import decode_cognito_jwt
 
 # Define Flask Blueprints for different parts of the application
 home_bp = Blueprint("home", __name__)
@@ -55,15 +56,17 @@ def login() -> Union[str, Dict[str, Union[bool, str]]]:
             # Call your CognitoService method for login here
             response = cognito_service.login_user(email, password)
 
-            # Note: For debugging purposes only. Remove the following line in production.
-            print(response)
-
             # Check if the Cognito response indicates a successful login
             if 'AuthenticationResult' in response:
                 access_token = response['AuthenticationResult']['AccessToken']
-                print(access_token)
-                # Set up user session (example)
-                session['access_token'] = access_token
+                decoded_token = decode_cognito_jwt(access_token)
+                user_sub = decoded_token.get('sub')
+
+                # Note: For debugging purposes only. Remove the following line in production.
+                print(user_sub)
+            
+                # Set up user session
+                session['user_sub'] = user_sub
 
                 # Uncomment the next line to make the session permanent
                # session.permanent = True
