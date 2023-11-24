@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, session
 from services.cognito_service import CognitoService 
 from typing import Union, Dict
+from utils.cognito_utils import decode_cognito_jwt
 
 # Define Flask Blueprints for different parts of the application
 home_bp = Blueprint("home", __name__)
@@ -29,19 +30,19 @@ def login() -> Union[str, Dict[str, Union[bool, str]]]:
         Exception: If an unexpected error occurs during user login.
 
     Example:
-          To render the login page:
-            ```python
-            result = login()  # GET request
-            ```
+        To render the login page:
+        ```python
+        result = login()  # GET request
+        ```
 
-          To handle user login:
-            ```python
-            data = {
-                'email': 'user@example.com',
-                'password': 'Password#123',
-            }
-            result = login(request_data=data)  # POST request
-            ```
+        To handle user login:
+        ```python
+        data = {
+            'email': 'user@example.com',
+            'password': 'Password#123',
+        }
+        result = login(request_data=data)  # POST request
+        ```
 
     Note:
         - This function expects `JSON` data for `POST` requests. The `JSON` should contain 'email' and 'password' keys.
@@ -55,11 +56,28 @@ def login() -> Union[str, Dict[str, Union[bool, str]]]:
             # Call your CognitoService method for login here
             response = cognito_service.login_user(email, password)
 
-            # Note: For debugging purposes only. Remove the following line in production.
-            print(response)
+            # Check if the Cognito response indicates a successful login
+            if 'AuthenticationResult' in response:
+                access_token = response['AuthenticationResult']['AccessToken']
+                decoded_token = decode_cognito_jwt(access_token)
+                user_sub = decoded_token.get('sub')
 
-            # Handle login response
-            return jsonify({'success': True, 'message': 'User logged in successfully'})
+                # Note: For debugging purposes only. Remove the following line in production.
+                print(user_sub)
+            
+                # Set up user session
+                session['user_sub'] = user_sub
+
+                # Uncomment the next line to make the session permanent
+               # session.permanent = True
+
+                # Return a success message
+                return jsonify({'success': True, 'message': 'User logged in successfully'})
+            
+            # Handle login failure with a specific error message
+            return jsonify({'success': False, 'message': 'Login failed. Please check your credentials.'})
+        
+        # Handle other exceptions
         except Exception as e:
             return jsonify({'success': False, 'message': str(e)})
 
