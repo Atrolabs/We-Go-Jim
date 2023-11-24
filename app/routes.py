@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, session
 from services.cognito_service import CognitoService 
 from typing import Union, Dict
 
@@ -29,19 +29,19 @@ def login() -> Union[str, Dict[str, Union[bool, str]]]:
         Exception: If an unexpected error occurs during user login.
 
     Example:
-          To render the login page:
-            ```python
-            result = login()  # GET request
-            ```
+        To render the login page:
+        ```python
+        result = login()  # GET request
+        ```
 
-          To handle user login:
-            ```python
-            data = {
-                'email': 'user@example.com',
-                'password': 'Password#123',
-            }
-            result = login(request_data=data)  # POST request
-            ```
+        To handle user login:
+        ```python
+        data = {
+            'email': 'user@example.com',
+            'password': 'Password#123',
+        }
+        result = login(request_data=data)  # POST request
+        ```
 
     Note:
         - This function expects `JSON` data for `POST` requests. The `JSON` should contain 'email' and 'password' keys.
@@ -58,8 +58,23 @@ def login() -> Union[str, Dict[str, Union[bool, str]]]:
             # Note: For debugging purposes only. Remove the following line in production.
             print(response)
 
-            # Handle login response
-            return jsonify({'success': True, 'message': 'User logged in successfully'})
+            # Check if the Cognito response indicates a successful login
+            if 'AuthenticationResult' in response:
+                access_token = response['AuthenticationResult']['AccessToken']
+                print(access_token)
+                # Set up user session (example)
+                session['access_token'] = access_token
+
+                # Uncomment the next line to make the session permanent
+               # session.permanent = True
+
+                # Return a success message
+                return jsonify({'success': True, 'message': 'User logged in successfully'})
+            
+            # Handle login failure with a specific error message
+            return jsonify({'success': False, 'message': 'Login failed. Please check your credentials.'})
+        
+        # Handle other exceptions
         except Exception as e:
             return jsonify({'success': False, 'message': str(e)})
 
