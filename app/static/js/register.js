@@ -4,7 +4,16 @@ document.addEventListener('DOMContentLoaded', function () {
     form.addEventListener('submit', function (event) {
         event.preventDefault();
 
-        const userRole = document.getElementById('isTrainer').checked ? 'Trainer' : 'Student';
+        const isStudentCheckbox = document.getElementById('isStudent');
+        const isTrainerCheckbox = document.getElementById('isTrainer');
+
+        // Check if at least one checkbox is checked
+        if (!isStudentCheckbox.checked && !isTrainerCheckbox.checked) {
+            alert('Please select at least one option.');
+            return; // Prevent form submission if no checkbox is checked
+        }
+
+        const userRole = isTrainerCheckbox.checked ? 'Trainer' : 'Student';
 
         const formData = new FormData(form);
         const jsonData = Object.fromEntries(formData.entries());
@@ -27,9 +36,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function toggleCheckboxes(checkboxId) {
     const checkboxes = ['isTrainer', 'isStudent'];
+    const clickedCheckbox = document.getElementById(checkboxId);
+
     checkboxes.forEach(id => {
+        const checkbox = document.getElementById(id);
+
         if (id !== checkboxId) {
-            document.getElementById(id).checked = false;
+            // If the clicked checkbox is checked, uncheck the other checkbox
+            if (clickedCheckbox.checked) {
+                checkbox.checked = false;
+            } else {
+                // If the clicked checkbox is unchecked, make sure at least one checkbox is checked
+                if (!checkbox.checked && !clickedCheckbox.checked) {
+                    clickedCheckbox.checked = true;
+                }
+            }
         }
     });
 }
