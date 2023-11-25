@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('form');
+    const errorSection = document.getElementById('error-section'); // Add this line
 
     form.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -19,7 +20,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     // Handle other successful cases if needed
                     const response = JSON.parse(xhr.responseText);
-                    console.log(response);
+                    // Display the error message in the error section
+                    errorSection.textContent = response.message;
+
+                    // Show the error section
+                    errorSection.style.display = 'block'; // Show the error section
+
+                    // You can also scroll to the error section for better visibility
+                    errorSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             }
         };

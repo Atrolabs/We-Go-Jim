@@ -2,6 +2,9 @@ from flask import Blueprint, render_template, request, jsonify, session
 from services.cognito_service import CognitoService 
 from typing import Union, Tuple
 from utils.cognito_utils import decode_cognito_jwt
+from utils.logs_utils import configure_logging, log_error
+
+configure_logging()
 
 # Define Flask Blueprints for different parts of the application
 home_bp = Blueprint("home", __name__)
@@ -78,11 +81,12 @@ def login() -> Union[str, Tuple[str, int]]:
                 return jsonify({'success': True, 'message': 'User logged in successfully'}), 200
             
             # Handle login failure with a specific error message
-            return jsonify({'success': False, 'message': 'Login failed. Please check your credentials.'}), 400
+            return jsonify({'success': False, 'message': 'Incorrect username or password.'}), 400
         
-        # Handle other exceptions
+        # Catch any exception and log it
         except Exception as e:
-            return jsonify({'success': False, 'message': str(e)}), 400
+            log_error(f"Exception during login: {str(e)}")
+            return jsonify({'success': False, 'message': 'Incorrect username or password.'}), 400
 
     return render_template("login.html")
 

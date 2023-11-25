@@ -57,3 +57,13 @@ input {
 .btn-primary:hover {
     background-color: #593d8b; /* Darker purple on hover */
 }
+
+.error-section {
+    display: none;
+    color: #ff6347; /* Red color for error messages */
+    margin-top: 10px;
+    margin-bottom: 20px;
+    background-color: #ffe6e6; /* Light red background color */
+    padding: 10px;
+    border-radius: 4px;
+}
