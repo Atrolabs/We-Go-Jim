@@ -131,7 +131,11 @@ def register() -> Union[str, Tuple[str, int]]:
             data = request.json  # Use request.json to handle JSON data
             email = data.get('email')
             password = data.get('password1')
+            password_confirm = data.get('password2')
             user_type = 'Trainer' if data.get('isTrainer') else 'Student'
+
+            if password != password_confirm:
+                return jsonify({'success': False, 'message': 'Passwords do not match!'}), 400
 
             response = cognito_service.register_user(email, password, user_type)
             
