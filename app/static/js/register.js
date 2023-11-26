@@ -70,3 +70,13 @@ function toggleCheckboxes(checkboxId) {
         }
     });
 }
+
+function login_redirect() {
+    var destinationURL = '/login'
+    
+    history.pushState({}, '', destinationURL);
+
+    window.history.pushState({}, '', destinationURL);
+    
+    window.location.href = destinationURL;
+}

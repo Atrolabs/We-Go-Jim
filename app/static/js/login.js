@@ -35,3 +35,13 @@ document.addEventListener('DOMContentLoaded', function () {
         xhr.send(JSON.stringify(jsonData));
     });
 });
+
+function register_redirect() {
+    var destinationURL = '/register'
+
+    history.pushState({}, '', destinationURL);
+
+    window.history.pushState({}, '', destinationURL);
+
+    window.location.href = destinationURL;
+}

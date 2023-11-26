@@ -57,7 +57,7 @@ input {
     margin-left: 8px; /* Add some spacing between the checkbox and label */
 }
 
-.btn-primary {
+button {
     background-color: #7a5eb5; /* Purple button color */
     color: #ffffff; /* Light button text color */
     padding: 10px 20px;
@@ -70,7 +70,7 @@ input {
     font-family: 'Poppins', sans-serif;
 }
 
-.btn-primary:hover {
+button:hover {
     background-color: #593d8b; /* Darker purple on hover */
 }
 
