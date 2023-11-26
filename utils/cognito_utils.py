@@ -2,6 +2,8 @@ import base64
 import hashlib
 import hmac
 import jwt
+from functools import wraps
+from flask import redirect, url_for, session
 from config.config_loader import USER_POOL_ID
 
 
@@ -78,3 +80,14 @@ def decode_cognito_jwt(token: str) -> dict:
     return decoded_token
 
 
+def login_required(route_function):
+    @wraps(route_function)
+    def protected_route(*args, **kwargs):
+        # Check if user is logged in (you can customize this condition based on your authentication logic)
+        if 'user_sub' in session:
+            return route_function(*args, **kwargs)
+        else:
+            # Redirect to the login page if not logged in
+            return redirect(url_for('login.login'))
+
+    return protected_route
