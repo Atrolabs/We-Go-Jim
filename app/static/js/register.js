@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('form');
+    const errorSection = document.getElementById('error-section'); // Add this line
 
     form.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -21,16 +22,31 @@ document.addEventListener('DOMContentLoaded', function () {
         // Update the key for user role to match the server-side expectation
         jsonData.userRole = userRole;
 
-        fetch('/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(jsonData),  // Send the updated JSON data
-        })
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error('Error:', error));
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/register', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    // Registration successful, redirect to the dashboard or login page
+                    window.location.href = '/login'; // Redirect to login after registration
+                } else {
+                    // Handle other successful cases if needed
+                    const response = JSON.parse(xhr.responseText);
+                    // Display the error message in the error section
+                    errorSection.textContent = response.message;
+
+                    // Show the error section
+                    errorSection.style.display = 'block'; // Show the error section
+
+                    // You can also scroll to the error section for better visibility
+                    errorSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        };
+
+        xhr.send(JSON.stringify(jsonData));
     });
 });
 

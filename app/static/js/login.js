@@ -31,12 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         };
-
-        xhr.onerror = function () {
-            // Handle network errors or other issues
-            console.error('XHR Error:', xhr.statusText);
-        };
-
+        
         xhr.send(JSON.stringify(jsonData));
     });
 });

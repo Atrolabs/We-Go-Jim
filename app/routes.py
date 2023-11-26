@@ -85,7 +85,7 @@ def login() -> Union[str, Tuple[str, int]]:
         
         # Catch any exception and log it
         except Exception as e:
-            log_error(f"Exception during login: {str(e)}")
+            log_error(str(e))
             return jsonify({'success': False, 'message': 'Incorrect username or password.'}), 400
 
     return render_template("login.html")
@@ -138,8 +138,14 @@ def register() -> Union[str, Tuple[str, int]]:
             # Handle register response with a status code of 200
             return jsonify({'success': True, 'message': 'User registered successfully'}), 200
         except Exception as e:
+            # Log the error
+            log_error(str(e))
+
+            # Split the error message using ': ' as the separator and take the second part
+            error_message = str(e).split(': ', 2)[-1]
+            
             # Handle registration failure with a specific error message and a status code of 400
-            return jsonify({'success': False, 'message': str(e)}), 400
+            return jsonify({'success': False, 'message': error_message}), 400
 
     return render_template("register.html")
 
