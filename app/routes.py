@@ -1,13 +1,12 @@
 from flask import Blueprint, render_template, request, jsonify, session
 from services.cognito_service import CognitoService 
 from typing import Union, Tuple
-from utils.cognito_utils import decode_cognito_jwt
+from utils.cognito_utils import decode_cognito_jwt, login_required
 from utils.logs_utils import configure_logging, log_error
 
 configure_logging()
 
-# Define Flask Blueprints for different parts of the application
-home_bp = Blueprint("home", __name__)
+# Define Flask Blueprints for different parts of the applications
 login_bp = Blueprint("login", __name__)
 register_bp = Blueprint("register", __name__)
 dashboard_bp = Blueprint("dashboard", __name__)
@@ -15,17 +14,16 @@ dashboard_bp = Blueprint("dashboard", __name__)
 # Create an instance of CognitoService to interact with Amazon Cognito
 cognito_service = CognitoService()  
 
-@home_bp.route('/', methods=['GET'])
-def home():
-    """Render the default page"""
-    return render_template("index.html")
 
-@dashboard_bp.route('/dashboard', methods=['GET'])
+@dashboard_bp.route('/', methods=['GET'])
+@login_required
 def dashboard():
     """Render the dashboard page"""
     # Retrieve user_sub from the session
     user_sub = session.get('user_sub') 
     return render_template('dashboard.html', user_sub=user_sub)
+
+
 
 @login_bp.route('/login', methods=['GET', 'POST'])
 def login() -> Union[str, Tuple[str, int]]:
@@ -152,4 +150,3 @@ def register() -> Union[str, Tuple[str, int]]:
             return jsonify({'success': False, 'message': error_message}), 400
 
     return render_template("register.html")
-

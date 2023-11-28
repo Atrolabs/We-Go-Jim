@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
                     // Login successful, redirect to the dashboard
-                    window.location.href = '/dashboard';
+                    window.location.href = '/';
                 } else {
                     // Handle other successful cases if needed
                     const response = JSON.parse(xhr.responseText);
