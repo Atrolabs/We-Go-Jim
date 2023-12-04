@@ -21,7 +21,8 @@ def dashboard():
     """Render the dashboard page"""
     # Retrieve user_sub from the session
     user_sub = session.get('user_sub') 
-    return render_template('dashboard.html', user_sub=user_sub)
+    user_type = session.get('user_type')
+    return render_template('dashboard.html', user_sub=user_sub, user_type=user_type)
 
 
 
@@ -71,9 +72,12 @@ def login() -> Union[str, Tuple[str, int]]:
                 access_token = response['AuthenticationResult']['AccessToken']
                 decoded_token = decode_cognito_jwt(access_token)
                 user_sub = decoded_token.get('sub')
+                user_type = cognito_service.get_user_type(user_sub)
+
 
                 # Set up user session
                 session['user_sub'] = user_sub
+                session['user_type'] = user_type
 
                 # Return a success message
                 return jsonify({'success': True, 'message': 'User logged in successfully'}), 200

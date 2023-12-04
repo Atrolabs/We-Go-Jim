@@ -152,3 +152,24 @@ Methods:
             return response
         except ClientError as e:
             raise Exception(f"Error logging in user: {e}")
+
+
+    def get_user_type(self, user_sub):
+        try:
+            # Get the user details using admin_get_user
+            response = self.client.admin_get_user(
+                UserPoolId=self.user_pool_id,
+                Username=user_sub
+            )
+            print(response)
+            # Extract custom attribute from the response
+            custom_attribute_value = None
+            for attribute in response['UserAttributes']:
+                if attribute['Name'] == 'custom:user_type':  # Replace with your custom attribute name
+                    custom_attribute_value = attribute['Value']
+
+            return custom_attribute_value
+
+        except Exception as e:
+            print(f"Error: {e}")
+            return None
