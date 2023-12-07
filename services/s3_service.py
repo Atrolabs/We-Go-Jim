@@ -20,7 +20,7 @@ class S3Service:
                                       aws_secret_access_key=self.aws_secret_access_key,
                                       region_name=self.region_name)
 
-    def send_user_model_to_s3(self, user_sub):
+    def s3_init_user(self, user_sub):
         """
         Uploads a JSON representation of the UserModel to the specified S3 bucket.
 
@@ -32,7 +32,7 @@ class S3Service:
             user_model = UserModel(user_sub=user_sub)
 
             # Convert UserModel to a dictionary
-            user_data = user_model.dict()
+            user_data = user_model.model_dump()
 
             # Convert dictionary to JSON string
             json_string = json.dumps(user_data)
@@ -55,3 +55,8 @@ class S3Service:
 # s3_service = S3Service(aws_access_key_id='your_access_key', aws_secret_access_key='your_secret_key',
 #                        region_name='your_region', bucket_name='your_bucket')
 # s3_service.send_user_model_to_s3(user_sub='example_user_sub')
+
+
+    def s3_update_user_exercise(self, user_sub, user_exercise_model):
+        # TODO: define method
+        pass

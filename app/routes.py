@@ -4,6 +4,7 @@ from services.s3_service import S3Service
 from typing import Union, Tuple
 from utils.cognito_utils import decode_cognito_jwt, login_required
 from utils.logs_utils import configure_logging, log_error
+from models.models import UserExerciseModel
 
 configure_logging()
 
@@ -11,6 +12,7 @@ configure_logging()
 login_bp = Blueprint("login", __name__)
 register_bp = Blueprint("register", __name__)
 dashboard_bp = Blueprint("dashboard", __name__)
+add_workout_bp = Blueprint("add-workout", __name__)
 
 # Create an instance of CognitoService to interact with Amazon Cognito
 cognito_service = CognitoService()  
@@ -144,7 +146,7 @@ def register() -> Union[str, Tuple[str, int]]:
             response = cognito_service.register_user(email, password, user_type)
 
             user_sub = response['UserSub']
-            s3_service.send_user_model_to_s3(user_sub=user_sub)
+            s3_service.s3_init_user(user_sub=user_sub)
             # Handle register response with a status code of 200
             return jsonify({'success': True, 'message': 'User registered successfully'}), 200
         except Exception as e:
@@ -158,3 +160,10 @@ def register() -> Union[str, Tuple[str, int]]:
             return jsonify({'success': False, 'message': error_message}), 400
 
     return render_template("register.html")
+
+
+
+@add_workout_bp.route('/add-workout', methods=['POST'])
+def add_workout():
+    # TODO: define method 
+    pass
