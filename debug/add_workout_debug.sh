@@ -7,5 +7,4 @@ curl -X POST -H "Content-Type: application/json" -d '{
       {"name": "Exercise3", "sets": [{"number": 1, "reps": 8, "weight": 70.0}, {"number": 2, "reps": 12, "weight": 40.0}, {"number": 3, "reps": 10, "weight": 55.0}]}
     ]}
   ]
-}' http://your.local.host.ip:5000/add-workout
-{"message":"Workout added successfully","success":true}
+}' http://your.local.host.ip:port/add-workout

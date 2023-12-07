@@ -20,6 +20,7 @@ class UserModel(BaseModel):
     last_modified: str = str(datetime.utcnow())
 
 class UserExerciseModel(UserModel):
+    last_modified: str = str(datetime.utcnow())
     workout_plan: List[DayWorkout] = [
         {"day_name": "Monday", "exercises": []},
         {"day_name": "Tuesday", "exercises": []},
