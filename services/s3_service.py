@@ -2,6 +2,7 @@ import boto3
 import json
 import os
 from config.config_loader import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_BUCKET_NAME, AWS_REGION
+from utils.logs_utils import log_error
 
 class S3Service:
     def __init__(self):
@@ -37,12 +38,11 @@ class S3Service:
             # Upload the JSON string to S3
             self.s3_client.put_object(Body=json_string, Bucket=self.bucket_name, Key=object_key)
 
-            print(f"JSON file '{file_path}' uploaded to S3 bucket '{self.bucket_name}' with key '{object_key}'.")
+            log_error(f"JSON file '{file_path}' uploaded to S3 bucket '{self.bucket_name}' with key '{object_key}'.")
             return True
 
         except Exception as e:
-            print(f"Error uploading JSON file to S3: {str(e)}")
-            traceback.print_exc()
+            log_error(f"Error uploading JSON file to S3: {str(e)}")
             return False
 
 # Example Usage:
