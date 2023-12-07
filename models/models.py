@@ -11,10 +11,21 @@ class Exercise(BaseModel):
     name: str
     sets: List[ExerciseSet]
 
+class DayWorkout(BaseModel):
+    day_name: str
+    exercises: List[Exercise]
+
 class UserModel(BaseModel):
-    """Initialize user model script on registration"""
     user_sub: str
     last_modified: str = str(datetime.utcnow())
 
 class UserExerciseModel(UserModel):
-    workout_plan: List[List[Exercise]]
+    workout_plan: List[DayWorkout] = [
+        {"day_name": "Monday", "exercises": []},
+        {"day_name": "Tuesday", "exercises": []},
+        {"day_name": "Wednesday", "exercises": []},
+        {"day_name": "Thursday", "exercises": []},
+        {"day_name": "Friday", "exercises": []},
+        {"day_name": "Saturday", "exercises": []},
+        {"day_name": "Sunday", "exercises": []}
+    ]

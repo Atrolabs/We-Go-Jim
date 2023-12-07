@@ -165,5 +165,26 @@ def register() -> Union[str, Tuple[str, int]]:
 
 @add_workout_bp.route('/add-workout', methods=['POST'])
 def add_workout():
-    # TODO: define method 
-    pass
+    try:
+        user_sub = request.json.get('user_id')  # Assuming you have 'user_id' in your JSON payload
+          # Implement this function to get user_sub from user_id
+
+        # Check if user_sub is found
+        if not user_sub:
+            return jsonify({'success': False, 'message': 'User not found.'}), 404
+
+        # Get the JSON data from the request
+        workout_data = request.json.get('workout_data', [])
+
+        # Create a UserExerciseModel instance with the user_sub and workout data
+        user_exercise_model = UserExerciseModel(user_sub=user_sub, workout_plan=workout_data)
+
+        # Upload the UserExerciseModel to S3
+        if s3_service.s3_update_user_exercise(user_sub, user_exercise_model):
+            return jsonify({"success": True, "message": "Workout added successfully"}), 200
+        else:
+            return jsonify({"success": False, "message": "Failed to add workout"}), 500
+
+    except Exception as e:
+        log_error(str(e))
+        return jsonify({'success': False, 'message': 'An error occurred while adding the workout.'}), 500

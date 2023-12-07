@@ -3,6 +3,7 @@ import json
 from models.models import UserModel 
 from config.config_loader import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_BUCKET_NAME, AWS_REGION
 from utils.logs_utils import log_error
+from models.models import UserExerciseModel
 
 class S3Service:
     def __init__(self):
@@ -57,6 +58,30 @@ class S3Service:
 # s3_service.send_user_model_to_s3(user_sub='example_user_sub')
 
 
-    def s3_update_user_exercise(self, user_sub, user_exercise_model):
-        # TODO: define method
-        pass
+    def s3_update_user_exercise(self, user_sub, user_exercise_model: UserExerciseModel):
+        """
+        Uploads a JSON representation of the UserExerciseModel to the specified S3 bucket.
+
+        :param user_sub: The user_sub variable to include in the UserExerciseModel.
+        :param user_exercise_model: The UserExerciseModel instance to upload.
+        :return: True if the upload is successful, False otherwise.
+        """
+        try:
+            # Convert UserExerciseModel to a dictionary
+            user_data = user_exercise_model.dict()
+
+            # Convert dictionary to JSON string
+            json_string = json.dumps(user_data)
+
+            # Define the object key (S3 key) based on user_sub
+            object_key = f"user_exercise_data/{user_sub}.json"
+
+            # Upload the JSON string to S3
+            self.s3_client.put_object(Body=json_string, Bucket=self.bucket_name, Key=object_key)
+
+            log_error(f"User exercise data JSON uploaded to S3 bucket '{self.bucket_name}' with key '{object_key}'.")
+            return True
+
+        except Exception as e:
+            log_error(f"Error uploading user exercise data JSON to S3: {str(e)}")
+            return False
