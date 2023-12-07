@@ -37,7 +37,7 @@ class S3Service:
 
             # Upload the JSON string to S3
             self.s3_client.put_object(Body=json_string, Bucket=self.bucket_name, Key=object_key)
-
+            
             log_error(f"JSON file '{file_path}' uploaded to S3 bucket '{self.bucket_name}' with key '{object_key}'.")
             return True
 
