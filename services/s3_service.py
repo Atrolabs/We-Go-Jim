@@ -38,7 +38,7 @@ class S3Service:
             json_string = json.dumps(user_data)
 
             # Define the object key (S3 key) based on user_sub
-            object_key = f"user_data/{user_sub}"
+            object_key = f"user_data/{user_sub}.json"
 
             # Upload the JSON string to S3
             self.s3_client.put_object(Body=json_string, Bucket=self.bucket_name, Key=object_key)
