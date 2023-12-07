@@ -1,6 +1,6 @@
 import boto3
 import json
-import os
+from models.models import UserModel 
 from config.config_loader import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_BUCKET_NAME, AWS_REGION
 from utils.logs_utils import log_error
 
@@ -20,33 +20,38 @@ class S3Service:
                                       aws_secret_access_key=self.aws_secret_access_key,
                                       region_name=self.region_name)
 
-    def send_json_file(self, file_path, object_key):
+    def send_user_model_to_s3(self, user_sub):
         """
-        Uploads a JSON file to the specified S3 bucket.
+        Uploads a JSON representation of the UserModel to the specified S3 bucket.
 
-        :param file_path: The local path to the JSON file.
-        :param object_key: The object key (S3 key) under which the file will be stored.
+        :param user_sub: The user_sub variable to include in the UserModel.
         :return: True if the upload is successful, False otherwise.
         """
         try:
-            with open(file_path, 'r') as file:
-                json_data = json.load(file)
+            # Create a UserModel instance with the provided user_sub
+            user_model = UserModel(user_sub=user_sub)
 
-            # Convert JSON data to a string before uploading
-            json_string = json.dumps(json_data)
+            # Convert UserModel to a dictionary
+            user_data = user_model.dict()
+
+            # Convert dictionary to JSON string
+            json_string = json.dumps(user_data)
+
+            # Define the object key (S3 key) based on user_sub
+            object_key = f"user_data/{user_sub}"
 
             # Upload the JSON string to S3
             self.s3_client.put_object(Body=json_string, Bucket=self.bucket_name, Key=object_key)
             
-            log_error(f"JSON file '{file_path}' uploaded to S3 bucket '{self.bucket_name}' with key '{object_key}'.")
+            log_error(f"User data JSON uploaded to S3 bucket '{self.bucket_name}' with key '{object_key}'.")
             return True
 
         except Exception as e:
-            log_error(f"Error uploading JSON file to S3: {str(e)}")
+            log_error(f"Error uploading user data JSON to S3: {str(e)}")
             return False
 
 # Example Usage:
 # Replace 'your_access_key', 'your_secret_key', 'your_region', and 'your_bucket' with your AWS credentials and S3 details.
 # s3_service = S3Service(aws_access_key_id='your_access_key', aws_secret_access_key='your_secret_key',
 #                        region_name='your_region', bucket_name='your_bucket')
-# s3_service.send_json_file(file_path='path/to/your/file.json', object_key='your/object/key.json')
+# s3_service.send_user_model_to_s3(user_sub='example_user_sub')

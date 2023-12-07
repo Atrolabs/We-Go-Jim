@@ -144,7 +144,7 @@ def register() -> Union[str, Tuple[str, int]]:
             response = cognito_service.register_user(email, password, user_type)
 
             user_sub = response['UserSub']
-            s3_service.send_json_file(file_path='debug/test.json', object_key=f'user_data/{user_sub}')
+            s3_service.send_user_model_to_s3(user_sub=user_sub)
             # Handle register response with a status code of 200
             return jsonify({'success': True, 'message': 'User registered successfully'}), 200
         except Exception as e:
