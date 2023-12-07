@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, request, jsonify, session
-from services.cognito_service import CognitoService 
+from services.cognito_service import CognitoService
+from services.s3_service import S3Service
 from typing import Union, Tuple
 from utils.cognito_utils import decode_cognito_jwt, login_required
 from utils.logs_utils import configure_logging, log_error
-from services.s3_service import S3Service
 
 configure_logging()
 
@@ -14,6 +14,7 @@ dashboard_bp = Blueprint("dashboard", __name__)
 
 # Create an instance of CognitoService to interact with Amazon Cognito
 cognito_service = CognitoService()  
+s3_service = S3Service()
 
 
 @dashboard_bp.route('/', methods=['GET'])
@@ -141,26 +142,16 @@ def register() -> Union[str, Tuple[str, int]]:
                 return jsonify({'success': False, 'message': 'Passwords do not match!'}), 400
 
             response = cognito_service.register_user(email, password, user_type)
-
-            # Check if the registration was successful
-            if response.get('success'):
-                # Call the S3Service.send_json_file method after successful registration
-                S3Service.send_json_file(file_path='debug/test.json', object_key='user_data/filename.json')
-
-                # Handle register response with a status code of 200
-                return jsonify({'success': True, 'message': 'User registered successfully'}), 200
-            else:
-                # Handle registration failure with the response message and a status code of 400
-                return jsonify({'success': False, 'message': response.get('message')}), 400
-
+            
+            # Handle register response with a status code of 200
+            return jsonify({'success': True, 'message': 'User registered successfully'}), 200
         except Exception as e:
             # Log the error
             log_error(str(e))
-            print(str(e))
 
             # Split the error message using ': ' as the separator and take the second part
             error_message = str(e).split(': ', 2)[-1]
-
+            
             # Handle registration failure with a specific error message and a status code of 400
             return jsonify({'success': False, 'message': error_message}), 400
 
