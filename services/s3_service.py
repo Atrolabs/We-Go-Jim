@@ -42,6 +42,7 @@ class S3Service:
 
         except Exception as e:
             print(f"Error uploading JSON file to S3: {str(e)}")
+            traceback.print_exc()
             return False
 
 # Example Usage:
