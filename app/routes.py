@@ -13,6 +13,7 @@ login_bp = Blueprint("login", __name__)
 register_bp = Blueprint("register", __name__)
 dashboard_bp = Blueprint("dashboard", __name__)
 add_workout_bp = Blueprint("add-workout", __name__)
+my_workouts_bp = Blueprint("my-workouts", __name__)
 
 # Create an instance of CognitoService to interact with Amazon Cognito
 cognito_service = CognitoService()  
@@ -163,28 +164,50 @@ def register() -> Union[str, Tuple[str, int]]:
 
 
 
-@add_workout_bp.route('/add-workout', methods=['POST'])
+@add_workout_bp.route('/add-workout', methods=['GET', 'POST'])
 def add_workout():
     try:
-        user_sub = request.json.get('user_id')  # Assuming you have 'user_id' in your JSON payload
-          # Implement this function to get user_sub from user_id
+        if request.method == 'GET':
+            # Handle the GET request to display the add_workout.html page
+            return render_template('add_workout.html')
 
-        # Check if user_sub is found
-        if not user_sub:
-            return jsonify({'success': False, 'message': 'User not found.'}), 404
+        elif request.method == 'POST':
+            user_sub = request.json.get('user_sub')
 
-        # Get the JSON data from the request
-        workout_data = request.json.get('workout_data', [])
+            if not user_sub:
+                return jsonify({'success': False, 'message': 'User not found.'}), 404
 
-        # Create a UserExerciseModel instance with the user_sub and workout data
-        user_exercise_model = UserExerciseModel(user_sub=user_sub, workout_plan=workout_data)
+            workout_plan = request.json.get('workout_plan', [])
 
-        # Upload the UserExerciseModel to S3
-        if s3_service.s3_update_user_exercise(user_sub, user_exercise_model):
-            return jsonify({"success": True, "message": "Workout added successfully"}), 200
-        else:
-            return jsonify({"success": False, "message": "Failed to add workout"}), 500
+            user_exercise_model = UserExerciseModel(user_sub=user_sub, workout_plan=workout_plan)
+
+            if s3_service.s3_update_user_exercise(user_sub, user_exercise_model):
+                return jsonify({"success": True, "message": "Workout added successfully"}), 200
+            else:
+                return jsonify({"success": False, "message": "Failed to add workout"}), 500
 
     except Exception as e:
         log_error(str(e))
         return jsonify({'success': False, 'message': 'An error occurred while adding the workout.'}), 500
+    
+
+@my_workouts_bp.route('/my-workouts', methods=['GET'])
+def my_workouts():
+    try:
+        # Retrieve user_sub from the request headers or session, depending on your authentication mechanism
+        user_sub = session.get('user_sub') 
+        print(user_sub)
+        if user_sub:
+            # Retrieve user data from S3
+            user_data = s3_service.s3_get_user_data(user_sub)
+
+            if user_data:
+                # return jsonify(user_data)
+                return render_template('my_workouts.html', user_data=user_data)
+            else:
+                return jsonify({'error': 'User data not found'}), 404
+        else:
+            return jsonify({'error': 'User not authenticated'}), 401
+    except Exception as e:
+        log_error(str(e))
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500

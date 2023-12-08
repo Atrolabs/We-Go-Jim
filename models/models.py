@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from pydantic import BaseModel
 from typing import List
 
@@ -17,10 +17,10 @@ class DayWorkout(BaseModel):
 
 class UserModel(BaseModel):
     user_sub: str
-    last_modified: str = str(datetime.utcnow())
+    last_modified: str = str(datetime.now(timezone(timedelta(hours=1))).astimezone())
 
 class UserExerciseModel(UserModel):
-    last_modified: str = str(datetime.utcnow())
+    last_modified: str = str(datetime.now(timezone(timedelta(hours=1))).astimezone())
     workout_plan: List[DayWorkout] = [
         {"day_name": "Monday", "exercises": []},
         {"day_name": "Tuesday", "exercises": []},
