@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Add a workout for the week">
+    <title>Add Workout</title>
+    <link rel="stylesheet" href="../static/css/add_workout.css">
+</head>
+<body>
+    <div class="container">
+        <form method="POST" action="/add-workout" id="workoutForm">
+            <h3>Add Workout</h3>
+            <div class="form-group">
+                <label for="user_sub">User Sub:</label>
+                <input type="text" class="form-control" id="user_sub" name="user_sub" placeholder="Enter user sub" required/>
+            </div>
+
+            <h3>Workout Plan</h3>
+
+            <!-- Dynamic Exercise Fields for Each Day -->
+            <div id="workoutDays">
+                <!-- JavaScript will add input fields here -->
+            </div>
+
+            <button type="button" onclick="addDay()">Add Day</button>
+
+            <br>
+            <button type="submit" id="submitBtn">Submit Workout</button>
+
+            <!-- Error Section -->
+            <div id="error-section" class="error-section"></div>
+        </form>
+    </div>
+
+    <script src="../static/js/add_workout.js"></script>
+</body>
+</html>
