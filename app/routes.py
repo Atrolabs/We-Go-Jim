@@ -13,6 +13,7 @@ login_bp = Blueprint("login", __name__)
 register_bp = Blueprint("register", __name__)
 dashboard_bp = Blueprint("dashboard", __name__)
 add_workout_bp = Blueprint("add-workout", __name__)
+my_workouts_bp = Blueprint("my-workouts", __name__)
 
 # Create an instance of CognitoService to interact with Amazon Cognito
 cognito_service = CognitoService()  
@@ -188,3 +189,25 @@ def add_workout():
     except Exception as e:
         log_error(str(e))
         return jsonify({'success': False, 'message': 'An error occurred while adding the workout.'}), 500
+    
+
+@my_workouts_bp.route('/my-workouts', methods=['GET'])
+def my_workouts():
+    try:
+        # Retrieve user_sub from the request headers or session, depending on your authentication mechanism
+        user_sub = session.get('user_sub') 
+        print(user_sub)
+        if user_sub:
+            # Retrieve user data from S3
+            user_data = s3_service.s3_get_user_data(user_sub)
+
+            if user_data:
+                # return jsonify(user_data)
+                return render_template('my_workouts.html', user_data=user_data)
+            else:
+                return jsonify({'error': 'User data not found'}), 404
+        else:
+            return jsonify({'error': 'User not authenticated'}), 401
+    except Exception as e:
+        log_error(str(e))
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500

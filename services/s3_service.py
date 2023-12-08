@@ -85,3 +85,32 @@ class S3Service:
         except Exception as e:
             log_error(f"Error uploading user exercise data JSON to S3: {str(e)}")
             return False
+        
+
+
+    def s3_get_user_data(self, user_sub):
+        """
+        Retrieves the user_data JSON file from the specified S3 bucket.
+        
+
+        :param user_sub: The user_sub variable to include in the UserModel.
+        :return: The user_data as a dictionary if the download is successful, None otherwise.
+        """
+        try:
+            print(user_sub)
+            # Define the object key (S3 key) based on user_sub
+            object_key = f"user_data/{user_sub}.json"
+
+            # Download the JSON file from S3
+            response = self.s3_client.get_object(Bucket=self.bucket_name, Key=object_key)
+
+            # Parse the JSON string
+            user_data_json = response['Body'].read().decode('utf-8')
+            user_data = json.loads(user_data_json)
+
+            return user_data
+
+        except Exception as e:
+            log_error(f"Error retrieving user data JSON from S3: {str(e)}")
+            return None
+

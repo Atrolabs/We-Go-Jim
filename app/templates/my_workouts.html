@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Workouts - your personalized workouts.">
+    <title>My workouts</title>
+    <link rel="stylesheet" href="../static/css/my_workouts.css">
+</head>
+<body>
+    <div class="container">
+        {% if user_data %}
+            <h3>Workout Plan for {{ user_data.user_sub }}</h3>
+            {% for day in user_data.workout_plan %}
+                <h4>{{ day.day_name }}</h4>
+                <ul>
+                    {% for exercise in day.exercises %}
+                        <li>
+                            <strong>{{ exercise.name }}</strong>
+                            <ul>
+                                {% for set in exercise.sets %}
+                                    <li>Set {{ set.number }}: Reps {{ set.reps }}, Weight {{ set.weight }} kg</li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        {% else %}
+            <p>No workout data available.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
