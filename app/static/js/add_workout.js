@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             if (response.ok) {
-                // Workout added successfully, you can redirect or show a success message
-                console.log('Workout added successfully');
+                // Workout added successfully, redirect to /
+                window.location.href = '/';
             } else {
                 const responseData = await response.json();
                 console.log(responseData);
@@ -37,6 +37,13 @@ document.addEventListener('DOMContentLoaded', function () {
             errorSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     });
+
+    // Initialize with fixed days of the week
+    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+    daysOfWeek.forEach(day => {
+        addDay(day);
+    });
 });
 
 function constructWorkoutPlan(formData) {
@@ -44,7 +51,7 @@ function constructWorkoutPlan(formData) {
 
     // Loop through each day container
     document.querySelectorAll('.day-container').forEach(dayContainer => {
-        const dayName = dayContainer.querySelector('[name="day_name"]').value.trim();
+        const dayName = dayContainer.querySelector('label').textContent.trim();
 
         // Skip if day name is empty
         if (!dayName) {
@@ -77,32 +84,29 @@ function constructWorkoutPlan(formData) {
     return workoutPlan;
 }
 
-function addDay() {
+function addDay(dayName) {
     const workoutDays = document.getElementById('workoutDays');
     const dayContainer = document.createElement('div');
     dayContainer.className = 'day-container';
 
-    const dayNameInput = document.createElement('input');
-    dayNameInput.type = 'text';
-    dayNameInput.className = 'form-control';
-    dayNameInput.placeholder = 'Enter day name (e.g., Monday)';
-    dayNameInput.name = 'day_name'; // Added name attribute
-    dayContainer.appendChild(dayNameInput);
+    const dayNameLabel = document.createElement('label');
+    dayNameLabel.textContent = dayName;
+    dayContainer.appendChild(dayNameLabel);
 
     const exercisesContainer = document.createElement('div');
     exercisesContainer.className = 'exercises-container';
+
+    workoutDays.appendChild(dayContainer);
 
     const addExerciseBtn = document.createElement('button');
     addExerciseBtn.type = 'button';
     addExerciseBtn.textContent = 'Add Exercise';
     addExerciseBtn.addEventListener('click', function () {
-        addExercise(exercisesContainer, dayNameInput.value);
+        addExercise(exercisesContainer, dayName);
     });
 
     dayContainer.appendChild(exercisesContainer);
     dayContainer.appendChild(addExerciseBtn);
-
-    workoutDays.appendChild(dayContainer);
 }
 
 function addExercise(exercisesContainer, dayName) {
@@ -146,6 +150,7 @@ function addExercise(exercisesContainer, dayName) {
             weightInput.className = 'form-control';
             weightInput.placeholder = `Weight for Set ${i}`;
             weightInput.name = `weight_set_${dayName}_${i}`; // Include day name in weight_set name
+            weightInput.step = 0.5;
             setContainer.appendChild(weightInput);
 
             setInputsContainer.appendChild(setContainer);

@@ -161,7 +161,6 @@ Methods:
                 UserPoolId=self.user_pool_id,
                 Username=user_sub
             )
-            print(response)
             # Extract custom attribute from the response
             custom_attribute_value = None
             for attribute in response['UserAttributes']:

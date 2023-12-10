@@ -68,7 +68,7 @@ class S3Service:
         """
         try:
             # Convert UserExerciseModel to a dictionary
-            user_data = user_exercise_model.dict()
+            user_data = user_exercise_model.model_dump()
 
             # Convert dictionary to JSON string
             json_string = json.dumps(user_data)
@@ -97,7 +97,6 @@ class S3Service:
         :return: The user_data as a dictionary if the download is successful, None otherwise.
         """
         try:
-            print(user_sub)
             # Define the object key (S3 key) based on user_sub
             object_key = f"user_data/{user_sub}.json"
 
@@ -113,4 +112,3 @@ class S3Service:
         except Exception as e:
             log_error(f"Error retrieving user data JSON from S3: {str(e)}")
             return None
-

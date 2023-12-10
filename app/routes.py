@@ -196,7 +196,6 @@ def my_workouts():
     try:
         # Retrieve user_sub from the request headers or session, depending on your authentication mechanism
         user_sub = session.get('user_sub') 
-        print(user_sub)
         if user_sub:
             # Retrieve user data from S3
             user_data = s3_service.s3_get_user_data(user_sub)
@@ -211,3 +210,4 @@ def my_workouts():
     except Exception as e:
         log_error(str(e))
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
+    
