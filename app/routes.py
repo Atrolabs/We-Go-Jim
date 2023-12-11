@@ -175,6 +175,7 @@ def register() -> Union[str, Tuple[str, int]]:
 
 
 @add_workout_bp.route('/add-workout', methods=['GET', 'POST'])
+@login_required
 def add_workout():
     try:
         if request.method == 'GET':
@@ -209,6 +210,7 @@ def add_workout():
     
 
 @my_workouts_bp.route('/my-workouts', methods=['GET'])
+
 def my_workouts():
     try:
         # Retrieve user_sub from the request headers or session, depending on your authentication mechanism
@@ -230,7 +232,7 @@ def my_workouts():
     
 
 
-@logout_bp.route('/logout', methods=['GET'])
+@logout_bp.route('/logout', methods=['POST'])
 def logout():
     session.clear()
     return redirect(url_for('login.login'))
