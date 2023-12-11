@@ -177,30 +177,28 @@ Methods:
         
 
         
-    def get_user_attrib_by_email(self, email, attribute_type):
-        print("get user attrib by email")
+    def get_sub_by_email(self, email):
         try:
-            # List users with the specified email attribute
-            response = self.client.list_users(
+            # Use admin_get_user to get user attributes, including sub
+            response = self.client.admin_get_user(
                 UserPoolId=self.user_pool_id,
-                Filter=f"{attribute_type} = \"{email}\""
+                Username=email
             )
 
-            if 'Users' in response and len(response['Users']) > 0:
-                # Assuming there's only one user with the specified email
-                user = response['Users'][0]
-                for attribute in user['Attributes']:
-                    if attribute['Name'] == attribute_type:
-                        return attribute['Value']
+            # Extract user sub (subject)
+            for attribute in response['UserAttributes']:
+                if attribute['Name'] == 'sub':
+                    return attribute['Value']
 
-            return None  # User not found
+            return None  # sub not found
 
         except Exception as e:
             print(f"Error: {e}")
             return None
+
+
     
     def check_user_exists(self, user_sub):
-        print("check user exist")
         try:
             response = self.client.admin_get_user(
                 UserPoolId=self.user_pool_id,

@@ -175,6 +175,7 @@ def register() -> Union[str, Tuple[str, int]]:
 
 
 @add_workout_bp.route('/add-workout', methods=['GET', 'POST'])
+@login_required
 def add_workout():
     try:
         if request.method == 'GET':
@@ -183,8 +184,7 @@ def add_workout():
 
         elif request.method == 'POST':
             email = request.json.get('email')
-            user_sub = cognito_service.get_user_attrib_by_email(email, 'sub')
-            print(user_sub)
+            user_sub = cognito_service.get_sub_by_email(email)
             # Check if the user exists in Cognito
             if user_sub is None or not cognito_service.check_user_exists(user_sub):
                 return jsonify({"success": False, "message": "User not found"}), 404
@@ -207,6 +207,7 @@ def add_workout():
     
 
 @my_workouts_bp.route('/my-workouts', methods=['GET'])
+@login_required
 def my_workouts():
     try:
         # Retrieve user_sub from the request headers or session, depending on your authentication mechanism
@@ -228,7 +229,8 @@ def my_workouts():
     
 
 
-@logout_bp.route('/logout', methods=['GET'])
+@logout_bp.route('/logout', methods=['POST'])
+@login_required
 def logout():
     session.clear()
     return redirect(url_for('login.login'))
