@@ -182,10 +182,17 @@ def add_workout():
             return render_template('add_workout.html')
 
         elif request.method == 'POST':
-            user_sub = request.json.get('user_sub')
+            # TODO: Change frontend to display email instead of sub, change variables as well
+            email = request.json.get('email')
+            # TODO: verify if 'UserSub' is really user sub xdddddddd
+            user_sub = cognito_service.get_user_attrib_by_email(email, 'UserSub')
 
-            if not user_sub:
-                return jsonify({'success': False, 'message': 'User not found.'}), 404
+            # TODO: In cognit_service create a method and call it here to check if user 
+            # with provided user_sub exists in our cognito user pool
+            # If no:
+            # return jsonify({"success": False, "message": "User not found"}), 404 
+            # If yes, proceed:
+
 
             workout_plan = request.json.get('workout_plan', [])
 
@@ -223,7 +230,7 @@ def my_workouts():
     
 
 
-@logout_bp.route('/logout')
+@logout_bp.route('/logout', methods=['GET'])
 def logout():
     session.clear()
     return redirect(url_for('login.login'))
