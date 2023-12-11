@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
 from services.cognito_service import CognitoService
 from services.s3_service import S3Service
 from typing import Union, Tuple
@@ -63,6 +63,10 @@ def login() -> Union[str, Tuple[str, int]]:
     Note:
         - This function expects `JSON` data for `POST` requests. The `JSON` should contain 'email' and 'password' keys.
     """
+    if 'user_sub' in session:
+        # User is already logged in, redirect to the dashboard
+        return redirect(url_for('dashboard.dashboard'))
+    
     if request.method == 'POST':
         try:
             data = request.json
@@ -133,8 +137,17 @@ def register() -> Union[str, Tuple[str, int]]:
         - This function expects `JSON` data for `POST` requests. The `JSON` should contain 'email', 'password1', and 'isTrainer' keys.
         - The 'isTrainer' key indicates whether the user is a Trainer. If present and `True`, the `user_type` is set to 'Trainer'; otherwise, it's set to 'Student'.
     """
+
+    if 'user_sub' in session:
+        # User is already logged in, redirect to the dashboard
+        return redirect(url_for('dashboard.dashboard'))
+    
     if request.method == 'POST':
         try:
+            if 'user_sub' in session:
+            # User is already logged in, redirect to the dashboard
+                return redirect(url_for('dashboard.dashboard'))
+            
             data = request.json  # Use request.json to handle JSON data
             email = data.get('email')
             password = data.get('password1')
