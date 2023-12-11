@@ -178,6 +178,7 @@ Methods:
 
         
     def get_user_attrib_by_email(self, email, attribute_type):
+        print("get user attrib by email")
         try:
             # List users with the specified email attribute
             response = self.client.list_users(
@@ -198,3 +199,13 @@ Methods:
             print(f"Error: {e}")
             return None
     
+    def check_user_exists(self, user_sub):
+        print("check user exist")
+        try:
+            response = self.client.admin_get_user(
+                UserPoolId=self.user_pool_id,
+                Username=user_sub
+            )
+            return True  # User exists
+        except self.client.exceptions.UserNotFoundException:
+            return False  # User not found
