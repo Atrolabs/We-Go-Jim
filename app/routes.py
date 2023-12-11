@@ -144,10 +144,6 @@ def register() -> Union[str, Tuple[str, int]]:
     
     if request.method == 'POST':
         try:
-            if 'user_sub' in session:
-            # User is already logged in, redirect to the dashboard
-                return redirect(url_for('dashboard.dashboard'))
-            
             data = request.json  # Use request.json to handle JSON data
             email = data.get('email')
             password = data.get('password1')
