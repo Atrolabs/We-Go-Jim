@@ -14,6 +14,7 @@ register_bp = Blueprint("register", __name__)
 dashboard_bp = Blueprint("dashboard", __name__)
 add_workout_bp = Blueprint("add-workout", __name__)
 my_workouts_bp = Blueprint("my-workouts", __name__)
+logout_bp = Blueprint("logout", __name__)
 
 # Create an instance of CognitoService to interact with Amazon Cognito
 cognito_service = CognitoService()  
@@ -220,3 +221,9 @@ def my_workouts():
         log_error(str(e))
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
     
+
+
+@logout_bp.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login.login'))
