@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const formData = new FormData(form);
             const jsonData = {
-                user_sub: formData.get('user_sub'),
+                email: formData.get('email'),
                 workout_plan: constructWorkoutPlan(formData)
             };
 
