@@ -154,20 +154,22 @@ Methods:
             raise Exception(f"Error logging in user: {e}")
 
 
-    def get_user_type(self, user_sub):
+    def get_user_attrib_by_sub(self, user_sub, attribute_type):
         try:
             # Get the user details using admin_get_user
             response = self.client.admin_get_user(
                 UserPoolId=self.user_pool_id,
                 Username=user_sub
             )
-            # Extract custom attribute from the response
-            custom_attribute_value = None
-            for attribute in response['UserAttributes']:
-                if attribute['Name'] == 'custom:user_type':  # Replace with your custom attribute name
-                    custom_attribute_value = attribute['Value']
 
-            return custom_attribute_value
+            # Extract the specified attribute from the response
+            attribute_value = None
+            for attribute in response['UserAttributes']:
+                if attribute['Name'] == attribute_type:
+                    attribute_value = attribute['Value']
+                    break  # Stop searching once the attribute is found
+
+            return attribute_value
 
         except Exception as e:
             print(f"Error: {e}")

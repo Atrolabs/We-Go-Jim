@@ -81,7 +81,7 @@ def login() -> Union[str, Tuple[str, int]]:
                 access_token = response['AuthenticationResult']['AccessToken']
                 decoded_token = decode_cognito_jwt(access_token)
                 user_sub = decoded_token.get('sub')
-                user_type = cognito_service.get_user_type(user_sub)
+                user_type = cognito_service.get_user_attrib_by_sub(user_sub, 'email')
 
 
                 # Set up user session
