@@ -1,14 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "navbar.html" %}
+
+{% block title %}Add Workout{% endblock %}
+
+{% block additional_styles %}
     <meta name="description" content="Add a workout for the week">
     <title>Add Workout</title>
     <link rel="stylesheet" href="../static/css/add_workout.css">
-</head>
-<body>
-    <div class="container">
+{% endblock %}
+
+{% block content %}
+    <div class="container" id="container">
         <form method="POST" action="/add-workout" id="workoutForm">
             <h3>Add Workout</h3>
             <div class="form-group">
@@ -30,7 +31,6 @@
             <div id="error-section" class="error-section"></div>
         </form>
     </div>
+{% endblock %}
 
-    <script src="../static/js/add_workout.js"></script>
-</body>
-</html>
+<script src="../static/js/add_workout.js"></script>

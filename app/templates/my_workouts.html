@@ -1,14 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "navbar.html" %}
+
+{% block title %}My Workouts{% endblock %}
+
+{% block additional_styles %}
     <meta name="description" content="Workouts - your personalized workouts.">
-    <title>My workouts</title>
+    <title>My Workouts</title>
     <link rel="stylesheet" href="../static/css/my_workouts.css">
-</head>
-<body>
-    <div class="container">
+{% endblock %}
+
+{% block content %}
+    <div class="container" id="container">
         {% if user_data %}
             <h3>Workout Plan for {{ user_data.user_sub }}</h3>
             {% for day in user_data.workout_plan %}
@@ -30,5 +31,4 @@
             <p>No workout data available.</p>
         {% endif %}
     </div>
-</body>
-</html>
+{% endblock %}

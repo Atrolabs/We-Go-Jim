@@ -189,9 +189,6 @@ def add_workout():
             if user_sub is None or not cognito_service.check_user_exists(user_sub):
                 return jsonify({"success": False, "message": "User not found"}), 404
 
-
-
-
             workout_plan = request.json.get('workout_plan', [])
 
             user_exercise_model = UserExerciseModel(user_sub=user_sub, workout_plan=workout_plan)
@@ -229,7 +226,7 @@ def my_workouts():
     
 
 
-@logout_bp.route('/logout', methods=['POST'])
+@logout_bp.route('/logout', methods=['GET'])
 @login_required
 def logout():
     session.clear()

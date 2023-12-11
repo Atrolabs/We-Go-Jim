@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/navbar.css">
+    {% block additional_styles %}{% endblock %}
+</head>
+<body>
+    <nav id="navs">
+        <div class="nav-container">
+            <div class="no-dropdown">
+                <a class="nav-item nav-link" id="dashboard" href="/">Dashboard</a>
+                <a class="nav-item nav-link" id="my-workouts" href="/my-workouts">My Workouts</a>
+                {% if user_type == "Trainer" %}
+                <a class="nav-item nav-link" id="add-workout" href="/add-workout">Add workout</a>
+                {% endif %}
+                <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+            </div>
+            <div class="dropdown">
+                <button onclick="dropdownMenu()" class="dropdown-btn dropbtn">&equiv;</button>
+                <div id="myDropdown" class="dropdown-content">
+                    <a class="nav-item nav-link" id="dashboard" href="/">Dashboard</a>
+                    <a class="nav-item nav-link" id="my-workouts" href="/my-workouts">My Workouts</a>
+                    {% if user_type == "Trainer" %}
+                    <a class="nav-item nav-link" id="add-workout" href="/add-workout">Add workout</a>
+                    {% endif %}
+                    <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% block content %}
+    {% endblock %}
+    <script src="../static/js/navbar.js"></script>
+</body>
+
+</html>
