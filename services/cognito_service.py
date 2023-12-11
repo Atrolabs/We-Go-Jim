@@ -174,3 +174,27 @@ Methods:
         except Exception as e:
             print(f"Error: {e}")
             return None
+        
+
+        
+    def get_user_attrib_by_email(self, email, attribute_type):
+        try:
+            # List users with the specified email attribute
+            response = self.client.list_users(
+                UserPoolId=self.user_pool_id,
+                Filter=f"{attribute_type} = \"{email}\""
+            )
+
+            if 'Users' in response and len(response['Users']) > 0:
+                # Assuming there's only one user with the specified email
+                user = response['Users'][0]
+                for attribute in user['Attributes']:
+                    if attribute['Name'] == attribute_type:
+                        return attribute['Value']
+
+            return None  # User not found
+
+        except Exception as e:
+            print(f"Error: {e}")
+            return None
+    
