@@ -178,14 +178,20 @@ def register() -> Union[str, Tuple[str, int]]:
 @login_required
 def add_workout():
     try:
+        user_type = session.get('user_type')
+
+        if user_type != "Trainer":
+            # If the user is not a Trainer, render a template with the message
+            return render_template('not_allowed.html')
+
         if request.method == 'GET':
-            user_type = session.get('user_type')
-            # Handle the GET request to display the add_workout.html page
+            # Handle the GET request to display the add_workout.html page for Trainers
             return render_template('add_workout.html', user_type=user_type)
 
         elif request.method == 'POST':
             email = request.json.get('email')
             user_sub = cognito_service.get_sub_by_email(email)
+
             # Check if the user exists in Cognito
             if user_sub is None or not cognito_service.check_user_exists(user_sub):
                 return jsonify({"success": False, "message": "User not found"}), 404
