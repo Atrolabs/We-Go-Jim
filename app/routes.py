@@ -28,7 +28,9 @@ def dashboard():
     # Retrieve user_sub from the session
     user_sub = session.get('user_sub') 
     email = session.get('email')
-    return render_template('dashboard.html', user_sub=user_sub, email=email)
+    user_type= session.get('user_type')
+    print(user_type)
+    return render_template('dashboard.html', user_sub=user_sub, email=email, user_type=user_type)
 
 
 

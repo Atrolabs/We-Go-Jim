@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
+    <div class="container" id="container">
         {% if user_data %}
             <h3>Workout Plan for {{ email }}</h3>
             {% for day in user_data.workout_plan %}
