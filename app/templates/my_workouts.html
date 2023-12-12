@@ -11,21 +11,23 @@
 {% block content %}
     <div class="container">
         {% if user_data %}
-            <h3>Workout Plan for {{ user_data.user_sub }}</h3>
+            <h3>Workout Plan for {{ email }}</h3>
             {% for day in user_data.workout_plan %}
-                <h4>{{ day.day_name }}</h4>
-                <ul>
-                    {% for exercise in day.exercises %}
-                        <li>
-                            <strong>{{ exercise.name }}</strong>
-                            <ul>
-                                {% for set in exercise.sets %}
-                                    <li>Set {{ set.number }}: Reps {{ set.reps }}, Weight {{ set.weight }} kg</li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    {% endfor %}
-                </ul>
+                <div class="day-pod">
+                    <h3>{{ day.day_name }}</h3>
+                    <ul class="exercise-list">
+                        {% for exercise in day.exercises %}
+                            <li class="exercise">
+                                <strong>{{ exercise.name }}</strong>
+                                <ul class="set-list">
+                                    {% for set in exercise.sets %}
+                                        <li class="set-item">Set {{ set.number }} - Reps {{ set.reps }}, Weight {{ set.weight }} kg</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             {% endfor %}
         {% else %}
             <p>No workout data available.</p>

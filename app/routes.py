@@ -216,6 +216,7 @@ def my_workouts():
     try:
         # Retrieve user_sub from the request headers or session, depending on your authentication mechanism
         user_sub = session.get('user_sub') 
+        email = cognito_service.get_user_attrib_by_sub(user_sub, 'email')
         if user_sub:
             # Retrieve user data from S3
             user_data = s3_service.s3_get_user_data(user_sub)
@@ -223,7 +224,7 @@ def my_workouts():
             if user_data:
                 user_type = session.get('user_type')
                 # return jsonify(user_data)
-                return render_template('my_workouts.html', user_data=user_data, user_type=user_type)
+                return render_template('my_workouts.html', user_data=user_data, user_type=user_type, email=email)
             else:
                 return jsonify({'error': 'User data not found'}), 404
         else:

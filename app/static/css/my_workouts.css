@@ -2,32 +2,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 
 body {
-    background-color: #121212; /* Dark background color */
-    color: #ffffff; /* Light text color */
+    background-color: #121212;
+    color: #ffffff;
     font-family: 'Poppins', sans-serif;
+    margin: 0;
 }
 
 .container {
-    max-width: fit-content;
+    max-width: 800px;
     margin: 90px auto;
     padding: 20px;
-    background-color: #1f1f1f; /* Darker container background color */
+    background-color: #1f1f1f;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    position: relative; /* Added relative positioning for button centering */
 }
 
-h3 {
+h2 {
     color: #7a5eb5; /* Purple heading color */
 }
 
-h4 {
-    color: #7a5eb5; /* Purple subheading color */
+h3 {
+    color: #7a5eb5;
+    font-size: 24px; /* Adjust the font size */
+    text-align: center; /* Center the day name */
+    margin-bottom: 10px; /* Add space below the day name */
 }
 
 ul {
     list-style: none;
     padding: 0;
+    margin-top: 10px;
 }
 
 li {
@@ -35,5 +39,21 @@ li {
 }
 
 strong {
-    color: #7a5eb5; /* Purple color for exercise name */
+    color: #7a5eb5;
+}
+
+.day-pod {
+    background-color: #2c2c2c;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.exercise {
+    margin-bottom: 15px;
+}
+
+.set-item {
+    margin-bottom: 5px;
 }
