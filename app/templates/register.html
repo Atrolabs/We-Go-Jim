@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <meta name="description" content="Register for an account - Sign up as a Student or Trainer. Enter your email and password to create your account.">
+    <link rel="stylesheet" href="../static/css/register.css">
+    <script src="../static/js/register.js"></script>
+</head>
+<body>
+    <div class="container">
+        <form method="POST" action="{{ url_for('register.register') }}">
+            <h3>Register</h3>
+
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="password1">Password:</label>
+                <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter password" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="password2">Password (Confirm):</label>
+                <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm password" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="userType">I am a:</label>
+            </div>
+
+            <div class="form-check">
+                <div class="form-check-item">
+                    <input type="checkbox" class="form-check-input" id="isStudent" name="isStudent" onclick="toggleCheckboxes('isStudent')" checked>
+                    <label class="form-check-label" for="isStudent">Student</label>
+                </div>
+                
+                <div class="form-check-item">
+                    <input type="checkbox" class="form-check-input" id="isTrainer" name="isTrainer" onclick="toggleCheckboxes('isTrainer')">
+                    <label class="form-check-label" for="isTrainer">Trainer</label>
+                </div>
+            </div>
+
+            <div id="error-section" class="error-section"></div>
+            
+            <button type="submit">Submit</button>
+
+            <p>Already have an account?</p>
+
+            <button onclick="login_redirect()">Log In</button>
+        </form>
+    </div>
+</body>
+</html>

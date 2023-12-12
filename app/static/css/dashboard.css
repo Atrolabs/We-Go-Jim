@@ -1,0 +1,26 @@
+/* dashboard.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+body {
+    background-color: #121212; /* Dark background color */
+    color: #ffffff; /* Light text color */
+    font-family: 'Poppins', sans-serif;
+}
+
+.container {
+    max-width: fit-content;
+    margin: 90px auto;
+    padding: 20px;
+    background-color: #1f1f1f; /* Darker container background color */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    position: relative; /* Added relative positioning for button centering */
+}
+
+h3 {
+    color: #7a5eb5; /* Purple heading color */
+}
+
+a{
+    color: #7a5eb5; /* Purple link color */
+}

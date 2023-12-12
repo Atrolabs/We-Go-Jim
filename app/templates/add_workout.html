@@ -1,0 +1,38 @@
+{% extends "navbar.html" %}
+
+{% block title %}Add Workout{% endblock %}
+
+{% block additional_styles %}
+    <meta name="description" content="Add a workout for the week">
+    <title>Add Workout</title>
+    <link rel="stylesheet" href="../static/css/add_workout.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container" id="container">
+        <form method="POST" action="/add-workout" id="workoutForm">
+            <h3>Add Workout</h3>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="text" class="form-control" id="email" name="email" placeholder="Enter email address" required/>
+            </div>
+
+            <h3>Workout Plan</h3>
+
+            <!-- Dynamic Exercise Fields for Each Day -->
+            <div id="workoutDays">
+                <!-- JavaScript will add input fields here -->
+            </div> 
+
+            <br>
+            <button type="submit" id="submitBtn">Submit Workout</button>
+
+            <!-- Error Section -->
+            <div id="error-section" class="error-section"></div>
+        </form>
+    </div>
+
+    <script src="../static/js/add_workout.js"></script>
+{% endblock %}
+</body>
+</html>

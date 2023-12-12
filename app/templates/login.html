@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Login to your account - Enter your email and password to access your account.">
+    <title>Login</title>
+    <link rel="stylesheet" href="../static/css/login.css">
+    <script src="../static/js/login.js"></script>
+</head>
+<body>
+    <div class="container">
+        <form method="POST" action="{{ url_for('login.login') }}">
+            <h3>Login</h3>
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required/>
+            </div>
+
+            <div id="error-section" class="error-section"></div>
+
+            <button type="submit">Login</button>
+
+            <p>Don't have an account?</p>
+
+            <button onclick="register_redirect()">Sign Up</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dashboard - Welcome to your personalized dashboard.">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../static/css/dashboard.css">
+</head>
+<body>
+    {% extends "navbar.html" %}
+
+    {% block additional_styles %}
+        <!-- Add any additional styles specific to the dashboard page here -->
+    {% endblock %}
+
+    {% block content %}
+        <div class="container" id="container">
+            <h3>Welcome, {{ email }}</h3>
+        </div>
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,72 @@
+/* login.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+body {
+    background-color: #121212; /* Dark background color */
+    color: #ffffff; /* Light text color */
+    font-family: 'Poppins', sans-serif;
+}
+
+.container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #1f1f1f; /* Darker container background color */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    position: relative; /* Added relative positioning for button centering */
+}
+
+h3 {
+    color: #7a5eb5; /* Purple heading color */
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ffffff; /* Light label text color */
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #7a5eb5; /* Purple border */
+    border-radius: 4px;
+    background-color: #2b2b2b; /* Dark input background color */
+    color: #ffffff; /* Light input text color */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+button {
+    background-color: #7a5eb5; /* Purple button color */
+    color: #ffffff; /* Light button text color */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%; /* Make the button take 100% width */
+    position: relative; /* Change to relative positioning */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    font-family: 'Poppins', sans-serif;
+}
+
+button:hover {
+    background-color: #593d8b; /* Darker purple on hover */
+}
+
+.error-section {
+    display: none;
+    color: #ff6347; /* Red color for error messages */
+    margin-top: 10px;
+    margin-bottom: 20px;
+    background-color: #ffe6e6; /* Light red background color */
+    padding: 10px;
+    border-radius: 4px;
+}
+
+
+/*b55e5e*/
