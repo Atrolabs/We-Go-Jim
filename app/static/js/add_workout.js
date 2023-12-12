@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('#workoutForm');
     const errorSection = document.getElementById('error-section');
 
+    // Initially hide the error section
+    errorSection.style.display = 'none';
+
     form.addEventListener('submit', async function (event) {
         event.preventDefault();
 
@@ -27,13 +30,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 const responseData = await response.json();
                 console.log(responseData);
                 errorSection.textContent = responseData.message;
-                errorSection.style.display = 'block';
+                errorSection.style.display = 'block'; // Show the error section
                 errorSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         } catch (error) {
             console.error('An error occurred:', error);
             errorSection.textContent = 'An error occurred while processing the request.';
-            errorSection.style.display = 'block';
+            errorSection.style.display = 'block'; // Show the error section
             errorSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     });
