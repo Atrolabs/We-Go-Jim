@@ -82,7 +82,7 @@ def login() -> Union[str, Tuple[str, int]]:
                 access_token = response['AuthenticationResult']['AccessToken']
                 decoded_token = decode_cognito_jwt(access_token)
                 user_sub = decoded_token.get('sub')
-                user_type = cognito_service.get_user_attrib_by_sub(user_sub, 'email')
+                user_type = cognito_service.get_user_attrib_by_sub(user_sub, 'custom:user_type')
 
 
                 # Set up user session
@@ -179,8 +179,9 @@ def register() -> Union[str, Tuple[str, int]]:
 def add_workout():
     try:
         if request.method == 'GET':
+            user_type = session.get('user_type')
             # Handle the GET request to display the add_workout.html page
-            return render_template('add_workout.html')
+            return render_template('add_workout.html', user_type=user_type)
 
         elif request.method == 'POST':
             email = request.json.get('email')
@@ -188,9 +189,6 @@ def add_workout():
             # Check if the user exists in Cognito
             if user_sub is None or not cognito_service.check_user_exists(user_sub):
                 return jsonify({"success": False, "message": "User not found"}), 404
-
-
-
 
             workout_plan = request.json.get('workout_plan', [])
 
@@ -217,8 +215,9 @@ def my_workouts():
             user_data = s3_service.s3_get_user_data(user_sub)
 
             if user_data:
+                user_type = session.get('user_type')
                 # return jsonify(user_data)
-                return render_template('my_workouts.html', user_data=user_data)
+                return render_template('my_workouts.html', user_data=user_data, user_type=user_type)
             else:
                 return jsonify({'error': 'User data not found'}), 404
         else:
@@ -229,8 +228,7 @@ def my_workouts():
     
 
 
-@logout_bp.route('/logout', methods=['POST'])
-@login_required
+@logout_bp.route('/logout', methods=['GET'])
 def logout():
     session.clear()
     return redirect(url_for('login.login'))

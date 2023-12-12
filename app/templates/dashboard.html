@@ -8,9 +8,17 @@
     <link rel="stylesheet" href="../static/css/dashboard.css">
 </head>
 <body>
-    <a class="logout-button" id="logout" href="/logout">Logout</a>
-    <div class="container">
-        <h3>Welcome, {{ user_type }}</h3>
-    </div>
+    {% extends "navbar.html" %}
+
+    {% block additional_styles %}
+        <!-- Add any additional styles specific to the dashboard page here -->
+    {% endblock %}
+
+    {% block content %}
+        <a class="logout-button" id="logout" href="/logout">Logout</a>
+        <div class="container">
+            <h3>Welcome, {{ user_type }}</h3>
+        </div>
+    {% endblock %}
 </body>
 </html>
