@@ -207,6 +207,10 @@ def add_workout():
             trainer_sub = session.get('user_sub')
 
             students_list = s3_service.get_student_list(trainer_sub)
+
+            if not students_list:
+                students_list = []
+
             if email not in students_list:
                 students_list.append(email)
 
@@ -269,7 +273,8 @@ def display_my_students():
 
         # Assuming you have an instance of YourClass called 'your_instance'
         student_list = s3_service.get_student_list(trainer_sub)
-
+        if not student_list:
+            student_list = []
         # Render the student list in an HTML template
         return render_template('my_students.html', student_list=student_list, trainer_sub=trainer_sub)
 
