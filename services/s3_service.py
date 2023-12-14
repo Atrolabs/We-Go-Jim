@@ -112,49 +112,6 @@ class S3Service:
         except Exception as e:
             log_error(f"Error retrieving user data JSON from S3: {str(e)}")
             return None
-
-    # def s3_update_student_list(self, trainer_sub, trainer_model: TrainerModel, student_email):
-    #     """
-    #     Updates the list of students in the TrainerModel stored in the specified S3 bucket.
-
-    #     :param trainer_model: The TrainerModel instance to be updated.
-    #     :param student_email: The email of the student to be added to the list.
-    #     :return: True if the update is successful, False otherwise.
-    #     """
-    #     try:
-    #         # Convert TrainerModel to a dictionary
-    #         trainer_data = trainer_model.model_dump()
-
-    #         # Define the object key (S3 key) based on trainer's user_sub
-    #         object_key = f"trainer_data/{trainer_sub}.json"
-
-    #         # Load existing data from S3
-    #         existing_data = {}
-    #         try:
-    #             existing_data = json.loads(self.s3_client.get_object(Bucket=self.bucket_name, Key=object_key)['Body'].read().decode('utf-8'))
-    #         except Exception as e:
-    #             log_error(f"Error loading existing data from S3: {str(e)}")
-
-    #         # Check if the student_email is not already in the list
-    #         if student_email not in existing_data.get("students", []):
-    #             # Add the new student_email to the list
-    #             existing_data.setdefault("students", []).append(student_email)
-
-    #             # Update existing data with the new TrainerModel data
-    #             existing_data.update(trainer_data)
-
-    #             # Upload the updated TrainerModel JSON string to S3
-    #             self.s3_client.put_object(Body=json.dumps(existing_data), Bucket=self.bucket_name, Key=object_key)
-
-    #             log_error(f"Student added to trainer's list in S3 bucket '{self.bucket_name}' with key '{object_key}'.")
-    #             return True
-    #         else:
-    #             log_error(f"Student email '{student_email}' already exists in the list.")
-    #             return False
-
-    #     except Exception as e:
-    #         log_error(f"Error updating student list in S3: {str(e)}")
-    #         return False
         
 
 
@@ -167,7 +124,7 @@ class S3Service:
         """
         try:
             # Define the object key (S3 key) for the trainer's JSON file based on trainer_sub
-            object_key = f"trainer/{trainer_sub}.json"
+            object_key = f"trainer_data/{trainer_sub}.json"
 
             # Download the JSON file from S3
             response = self.s3_client.get_object(Bucket=self.bucket_name, Key=object_key)
@@ -184,38 +141,25 @@ class S3Service:
             log_error(f"Error retrieving student list JSON from S3: {str(e)}")
             return None
 
-    def add_student_to_list(self, trainer_model: TrainerModel, student_email: str):
-        """
-        Adds a new student to the list for the specified trainer in the S3 bucket.
-
-        :param trainer_model: The TrainerModel instance representing the trainer.
-        :param student_email: The email of the student to be added.
-        :return: True if the addition is successful, False otherwise.
-        """
+    def add_student_to_list(self, trainer_model: TrainerModel):
         try:
-            # Retrieve the existing trainer data
-            existing_trainer_data = self.get_student_list(trainer_model.user_sub)
+            # Convert TrainerModel to a dictionary
+            trainer_data = trainer_model.model_dump()  # Assuming you have a method like model_dump() to convert to a dictionary
 
-            # If the retrieval fails or the 'students' field doesn't exist, create an empty list
-            if existing_trainer_data is None or 'students' not in existing_trainer_data:
-                existing_trainer_data = {'students': []}
+            # Convert dictionary to JSON string
+            json_string = json.dumps(trainer_data)
 
-            # Add the new student email to the list
-            existing_trainer_data['students'].append(student_email)
+            # Define the object key (S3 key) based on the model name
+            object_key = f"trainer_data/{trainer_model.user_sub}.json"
 
-            # Define the object key (S3 key) for the trainer's JSON file based on trainer_sub
-            object_key = f"trainer/{trainer_model.user_sub}.json"
+            # Upload the JSON string to S3
+            self.s3_client.put_object(Body=json_string, Bucket=self.bucket_name, Key=object_key)
 
-            # Upload the updated trainer data to S3
-            self.s3_client.put_object(Body=json.dumps(existing_trainer_data), Bucket=self.bucket_name, Key=object_key)
-
-            # Update the trainer_model instance with the new list of students
-            trainer_model.students = existing_trainer_data['students']
-
+            print(f"Trainer data JSON uploaded to S3 bucket '{self.bucket_name}' with key '{object_key}'.")
             return True
 
         except Exception as e:
-            log_error(f"Error adding student to the list in S3: {str(e)}")
+            print(f"Error uploading trainer data JSON to S3: {str(e)}")
             return False
 
 

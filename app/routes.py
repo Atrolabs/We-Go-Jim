@@ -205,7 +205,14 @@ def add_workout():
 
             workout_plan = request.json.get('workout_plan', [])
             trainer_sub = session.get('user_sub')
-            s3_service.add_student_to_list(trainer_sub, {"email": email})
+
+            students_list = s3_service.get_student_list(trainer_sub)
+            if email not in students_list:
+                students_list.append(email)
+
+            trainer_model = TrainerModel(user_sub=trainer_sub, students=students_list)
+            
+            s3_service.add_student_to_list(trainer_model=trainer_model)
 
             user_exercise_model = UserExerciseModel(user_sub=user_sub, current_trainer=trainer_sub, workout_plan=workout_plan)
 
