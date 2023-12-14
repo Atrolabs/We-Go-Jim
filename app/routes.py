@@ -19,6 +19,7 @@ dashboard_bp = Blueprint("dashboard", __name__)
 add_workout_bp = Blueprint("add-workout", __name__)
 my_workouts_bp = Blueprint("my-workouts", __name__)
 logout_bp = Blueprint("logout", __name__)
+my_students_bp = Blueprint("my-students", __name__)
 
 # Create an instance of CognitoService to interact with Amazon Cognito
 cognito_service = CognitoService()  
@@ -204,6 +205,7 @@ def add_workout():
 
             workout_plan = request.json.get('workout_plan', [])
             trainer_sub = session.get('user_sub')
+            s3_service.add_student_to_list(trainer_sub, {"email": email})
 
             user_exercise_model = UserExerciseModel(user_sub=user_sub, current_trainer=trainer_sub, workout_plan=workout_plan)
 
@@ -246,3 +248,23 @@ def my_workouts():
 def logout():
     session.clear()
     return redirect(url_for('login.login'))
+
+
+@my_students_bp.route('/my-students', methods=['GET'])
+def display_my_students():
+    try:
+        user_type = session.get('user_type')
+        if user_type != "Trainer":
+            # If the user is not a Trainer, render a template with the message
+            return render_template('not_allowed.html')
+        # Get the trainer_sub from the current user's session or any other means
+        trainer_sub = session.get('user_sub')
+
+        # Assuming you have an instance of YourClass called 'your_instance'
+        student_list = s3_service.get_student_list(trainer_sub)
+
+        # Render the student list in an HTML template
+        return render_template('my_students.html', student_list=student_list, trainer_sub=trainer_sub)
+
+    except Exception as e:
+        return f"Error: {str(e)}"
