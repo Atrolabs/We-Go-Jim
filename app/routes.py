@@ -8,7 +8,7 @@ from typing import Union, Tuple
 
 from utils.cognito_utils import decode_cognito_jwt, login_required
 from utils.logs_utils import configure_logging, log_error
-from models.models import UserExerciseModel
+from models.models import UserExerciseModel, TrainerModel
 
 configure_logging()
 
@@ -33,7 +33,6 @@ def dashboard():
     user_sub = session.get('user_sub') 
     email = session.get('email')
     user_type= session.get('user_type')
-    print(user_type)
     return render_template('dashboard.html', user_sub=user_sub, email=email, user_type=user_type)
 
 
@@ -202,24 +201,6 @@ def add_workout():
             # Check if the user exists in Cognito
             if user_sub is None or not cognito_service.check_user_exists(user_sub):
                 return jsonify({"success": False, "message": "User not found"}), 404
-            
-            user_data = s3_service.s3_get_user_data(user_sub)
-
-            # Check if user_data is a string
-            if isinstance(user_data, str):
-                # Convert the JSON data to a Python dictionary
-                user_data_dict = json.loads(user_data)
-
-                # Check if the "current_trainer" key is present in the dictionary
-                if "current_trainer" in user_data_dict:
-                    # Access the value associated with the "current_trainer" key
-                    current_trainer = user_data_dict["current_trainer"]
-                    print(current_trainer)
-                else:
-                    print("Key 'current_trainer' not found in the user data.")
-            else:
-                print("Invalid user_data format. Expected a string.")
-
 
             workout_plan = request.json.get('workout_plan', [])
             trainer_sub = session.get('user_sub')

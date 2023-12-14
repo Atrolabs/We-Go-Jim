@@ -113,7 +113,7 @@ class S3Service:
             log_error(f"Error retrieving user data JSON from S3: {str(e)}")
             return None
 
-    def s3_update_student_list(self, trainer_model: TrainerModel, student_email):
+    def s3_update_student_list(self, trainer_sub, trainer_model: TrainerModel, student_email):
         """
         Updates the list of students in the TrainerModel stored in the specified S3 bucket.
 
@@ -126,7 +126,7 @@ class S3Service:
             trainer_data = trainer_model.model_dump()
 
             # Define the object key (S3 key) based on trainer's user_sub
-            object_key = f"trainer_data/{trainer_model.user_sub}.json"
+            object_key = f"trainer_data/{trainer_sub}.json"
 
             # Load existing data from S3
             existing_data = {}
