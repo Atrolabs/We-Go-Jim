@@ -1,16 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "navbar.html" %}
+
+{% block title %}Student List{% endblock %}
+
+{% block additional_styles %}
+    <meta name="description" content="Student List - a list of students for the trainer.">
     <title>Student List</title>
-</head>
-<body>
-    <h1>Student List for Trainer {{ trainer_sub }}</h1>
-    <ul>
-        {% for student in student_list %}
-            <li>{{ student }}</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+    <link rel="stylesheet" href="../static/css/my_students.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container student-list-container" id="container">
+        <h1>Student List for {{ email }}</h1>
+        {% if student_list %}
+            <ul>
+                {% for student in student_list %}
+                    <li class="student-list-item">{{ student }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No students available.</p>
+        {% endif %}
+    </div>
+{% endblock %}
+

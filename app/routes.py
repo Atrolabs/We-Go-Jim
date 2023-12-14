@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
-import json
 
 from services.cognito_service import CognitoService
 from services.s3_service import S3Service
@@ -276,7 +275,8 @@ def display_my_students():
         if not student_list:
             student_list = []
         # Render the student list in an HTML template
-        return render_template('my_students.html', student_list=student_list, trainer_sub=trainer_sub)
+        email = session.get('email')
+        return render_template('my_students.html', student_list=student_list, trainer_sub=trainer_sub, user_type=user_type, email=email)
 
     except Exception as e:
         return f"Error: {str(e)}"
