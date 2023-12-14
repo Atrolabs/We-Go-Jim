@@ -11,7 +11,7 @@
 {% block content %}
     <div class="container" id="container">
         {% if user_data %}
-            <h3>Workout Plan for {{ email }}</h3>
+            <h3>Workout Plan from {{ trainer_email }}</h3>
             {% for day in user_data.workout_plan %}
                 <div class="day-pod">
                     <h3>{{ day.day_name }}</h3>

@@ -106,7 +106,7 @@ class S3Service:
             # Parse the JSON string
             user_data_json = response['Body'].read().decode('utf-8')
             user_data = json.loads(user_data_json)
-
+            
             return user_data
 
         except Exception as e:

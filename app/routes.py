@@ -239,11 +239,13 @@ def my_workouts():
         if user_sub:
             # Retrieve user data from S3
             user_data = s3_service.s3_get_user_data(user_sub)
+            trainer_sub = user_data.get('current_trainer', None)
+            trainer_email = cognito_service.get_user_attrib_by_sub(trainer_sub, 'email')
 
             if user_data:
                 user_type = session.get('user_type')
                 # return jsonify(user_data)
-                return render_template('my_workouts.html', user_data=user_data, user_type=user_type, email=email)
+                return render_template('my_workouts.html', user_data=user_data, user_type=user_type, trainer_email=trainer_email)
             else:
                 return jsonify({'error': 'User data not found'}), 404
         else:
@@ -279,4 +281,5 @@ def display_my_students():
         return render_template('my_students.html', student_list=student_list, trainer_sub=trainer_sub, user_type=user_type, email=email)
 
     except Exception as e:
-        return f"Error: {str(e)}"
+        log_error(str(e))
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
