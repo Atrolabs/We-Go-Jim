@@ -200,9 +200,9 @@ def add_workout():
                 return jsonify({"success": False, "message": "User not found"}), 404
 
             workout_plan = request.json.get('workout_plan', [])
-            trainer_email = session.get('user_sub')
+            trainer_sub = session.get('user_sub')
 
-            user_exercise_model = UserExerciseModel(user_sub=user_sub, current_trainer=trainer_email, workout_plan=workout_plan)
+            user_exercise_model = UserExerciseModel(user_sub=user_sub, current_trainer=trainer_sub, workout_plan=workout_plan)
 
             if s3_service.s3_update_user_exercise(user_sub, user_exercise_model):
                 return jsonify({"success": True, "message": "Workout added successfully"}), 200
