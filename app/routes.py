@@ -19,6 +19,7 @@ add_workout_bp = Blueprint("add-workout", __name__)
 my_workouts_bp = Blueprint("my-workouts", __name__)
 logout_bp = Blueprint("logout", __name__)
 my_students_bp = Blueprint("my-students", __name__)
+my_records_bp = Blueprint("my-records", __name__)
 
 # Create an instance of CognitoService to interact with Amazon Cognito
 cognito_service = CognitoService()  
@@ -263,6 +264,7 @@ def logout():
 
 
 @my_students_bp.route('/my-students', methods=['GET'])
+@login_required
 def display_my_students():
     try:
         user_type = session.get('user_type')
@@ -280,6 +282,21 @@ def display_my_students():
         email = session.get('email')
         return render_template('my_students.html', student_list=student_list, trainer_sub=trainer_sub, user_type=user_type, email=email)
 
+    except Exception as e:
+        log_error(str(e))
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
+    
+
+@my_records_bp.route('/my-records', methods=['GET'])
+@login_required
+def my_records():
+    try:
+        email = session.get('email')
+        user_sub = session.get('user_sub')
+        user_type = session.get('user_type')
+
+
+        return render_template('my_records.html', user_sub=user_sub, email=email, user_type=user_type)
     except Exception as e:
         log_error(str(e))
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
