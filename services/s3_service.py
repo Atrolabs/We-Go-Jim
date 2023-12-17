@@ -21,6 +21,8 @@ class S3Service:
                                       aws_secret_access_key=self.aws_secret_access_key,
                                       region_name=self.region_name)
 
+
+
     def s3_init_user(self, user_sub):
         """
         Uploads a JSON representation of the UserModel to the specified S3 bucket.
@@ -51,11 +53,6 @@ class S3Service:
             log_error(f"Error uploading user data JSON to S3: {str(e)}")
             return False
 
-# Example Usage:
-# Replace 'your_access_key', 'your_secret_key', 'your_region', and 'your_bucket' with your AWS credentials and S3 details.
-# s3_service = S3Service(aws_access_key_id='your_access_key', aws_secret_access_key='your_secret_key',
-#                        region_name='your_region', bucket_name='your_bucket')
-# s3_service.send_user_model_to_s3(user_sub='example_user_sub')
 
 
     def s3_update_user_exercise(self, user_sub, user_exercise_model: UserExerciseModel):
@@ -140,6 +137,8 @@ class S3Service:
         except Exception as e:
             log_error(f"Error retrieving student list JSON from S3: {str(e)}")
             return None
+        
+
 
     def add_student_to_list(self, trainer_model: TrainerModel):
         try:
@@ -161,7 +160,17 @@ class S3Service:
         except Exception as e:
             print(f"Error uploading trainer data JSON to S3: {str(e)}")
             return False
+        
+
+    def add_bench_press_record(self):
+        pass
 
 
+    
+    def add_deadlift_record(self):
+        pass
 
 
+    
+    def add__record(self):
+        pass
