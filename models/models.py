@@ -20,7 +20,6 @@ class UserModel(BaseModel):
     last_modified: str = str(datetime.now(timezone(timedelta(hours=1))).astimezone())
 
 class UserExerciseModel(UserModel):
-    last_modified: str = str(datetime.now(timezone(timedelta(hours=1))).astimezone())
     current_trainer: str
     workout_plan: List[DayWorkout] = [
         {"day_name": "Monday", "exercises": []},
@@ -33,5 +32,4 @@ class UserExerciseModel(UserModel):
     ]
 
 class TrainerModel(UserModel):
-    last_modified: str = str(datetime.now(timezone(timedelta(hours=1))).astimezone())
     students: List[str]
