@@ -1,0 +1,33 @@
+{% extends "navbar.html" %}
+
+{% block title %}My Records{% endblock %}
+
+{% block additional_styles %}
+<meta name="description" content="My records - you can check and modify your records.">
+<title>My Records</title>
+<link rel="stylesheet" href="../static/css/my_records.css">
+{% endblock %}
+
+{% block content %}
+<div class="container" id="container">
+    <h2>My Records {{ email }} </h2>
+    <div class="form-group">
+        <label for="benchPress">Bench Press</label>
+        <input type="number" id="benchPress" placeholder="Enter your new record" oninput="validateInput(this)" min="0">
+        <button type="button" >Submit</button>
+    </div>
+    <div class="form-group">
+        <label for="deadlift">Deadlift</label>
+        <input type="number" id="deadlift" placeholder="Enter your new record" oninput="validateInput(this)" min="0">
+        <button type="button" >Submit</button>
+    </div>
+    <div class="form-group">
+        <label for="squats">Squats</label>
+        <input type="number" id="squats" placeholder="Enter your new record" oninput="validateInput(this)" min="0">
+        <button type="button">Submit</button>
+    </div>
+
+    {{ chart_html|safe }}
+</div>
+<script src="../static/js/my_records.js"></script>
+{% endblock %}

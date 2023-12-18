@@ -155,6 +155,26 @@ Methods:
 
 
     def get_user_attrib_by_sub(self, user_sub, attribute_type):
+        """
+        Retrieves a specific attribute of a user based on their sub (subject) identifier.
+
+        Parameters:
+            - user_sub (str): The sub (subject) identifier of the user.
+            - attribute_type (str): The type of attribute to retrieve.
+
+        Returns:
+            - Union[str, None]: The value of the specified attribute, or None if the attribute is not found.
+
+        Example:
+            ```python
+            cognito_service = CognitoService()
+            attribute_value = cognito_service.get_user_attrib_by_sub(user_sub="user123", attribute_type="email")
+            print(attribute_value)
+            ```
+
+        Note:
+            Make sure to handle exceptions appropriately when calling this method.
+        """
         try:
             # Get the user details using admin_get_user
             response = self.client.admin_get_user(
@@ -178,6 +198,26 @@ Methods:
 
         
     def get_sub_by_email(self, email):
+        """
+        Retrieves the sub (subject) identifier of a user based on their email address.
+
+        Parameters:
+            - email (str): The email address of the user.
+
+        Returns:
+            - Union[str, None]: The sub (subject) identifier of the user, or None if the user is not found.
+
+        Example:
+            ```python
+            cognito_service = CognitoService()
+            sub_value = cognito_service.get_sub_by_email(email="user@example.com")
+            print(sub_value)
+            ```
+
+        Note:
+            Make sure to handle exceptions appropriately when calling this method.
+        """
+
         try:
             # Use admin_get_user to get user attributes, including sub
             response = self.client.admin_get_user(
@@ -199,6 +239,25 @@ Methods:
 
     
     def check_user_exists(self, user_sub):
+        """
+        Checks whether a user with the specified sub (subject) identifier exists.
+
+        Parameters:
+            - user_sub (str): The sub (subject) identifier of the user.
+
+        Returns:
+            - bool: True if the user exists, False otherwise.
+
+        Example:
+            ```python
+            cognito_service = CognitoService()
+            user_exists = cognito_service.check_user_exists(user_sub="user123")
+            print(user_exists)
+            ```
+
+        Note:
+            Make sure to handle exceptions appropriately when calling this method.
+        """
         try:
             response = self.client.admin_get_user(
                 UserPoolId=self.user_pool_id,

@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+}
+
+h1 {
+    color: #7a5eb5; /* Purple heading color */
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+p {
+    color: #7a5eb5; /* Purple color for paragraphs */
+}
+
+/* Additional styles for the Student List page */
+.student-list-container {
+    background-color: #2c2c2c;
+    padding: 15px;
+    border-radius: 8px;
+    max-width: 800px;
+    margin: 90px auto;
+    padding: 20px;
+    background-color: #1f1f1f;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.student-list-item {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Adjust the styles based on your specific needs */

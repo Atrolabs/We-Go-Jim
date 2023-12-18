@@ -1,0 +1,32 @@
+{% extends "navbar.html" %}
+
+{% block title %}Student List{% endblock %}
+
+{% block additional_styles %}
+    <meta charset="UTF-8">
+    <meta name="description" content="Student List - a list of students for the trainer.">
+    <title>Student List</title>
+    <link rel="stylesheet" href="../static/css/my_students.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container student-list-container" id="container">
+        <h1>Student List for {{ email }}</h1>
+        {% if student_list %}
+            <ul>
+                {% for i in range(student_list|length) %}
+                    <li class="student-list-item">
+                        {{ student_list[i] }}
+                        <!-- Display the chart for the student -->
+                        <div class="chart-container">
+                            {{ student_charts[i] | safe }}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No students available.</p>
+        {% endif %}
+    </div>
+{% endblock %}
+

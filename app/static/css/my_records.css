@@ -2,6 +2,7 @@ body {
     background-color: #121212;
     color: #ffffff;
     font-family: 'Poppins', sans-serif;
+    margin: 0;
 }
 
 .container {
@@ -11,9 +12,10 @@ body {
     background-color: #1f1f1f;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
 }
 
-h3 {
+h2 {
     color: #7a5eb5;
 }
 
@@ -27,8 +29,7 @@ label {
     color: #ffffff;
 }
 
-input,
-textarea {
+input {
     width: calc(100% - 20px);
     padding: 10px;
     margin-bottom: 10px;
@@ -46,7 +47,7 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    width: 100%;
+    width: calc(100% - 20px);
     position: relative;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
@@ -55,14 +56,4 @@ button {
 
 button:hover {
     background-color: #593d8b;
-}
-
-#error-section {
-    display: none; /* Hide the error section by default */
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #ff5454;
-    color: #ffffff;
-    border-radius: 4px;
-    font-size: 14px;
 }

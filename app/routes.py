@@ -1,10 +1,15 @@
 from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
+
 from services.cognito_service import CognitoService
 from services.s3_service import S3Service
+
 from typing import Union, Tuple
+
 from utils.cognito_utils import decode_cognito_jwt, login_required
 from utils.logs_utils import configure_logging, log_error
-from models.models import UserExerciseModel
+from models.models import UserExerciseModel, TrainerModel, RecordsModel
+
+import plotly.graph_objs as go
 
 configure_logging()
 
@@ -15,6 +20,8 @@ dashboard_bp = Blueprint("dashboard", __name__)
 add_workout_bp = Blueprint("add-workout", __name__)
 my_workouts_bp = Blueprint("my-workouts", __name__)
 logout_bp = Blueprint("logout", __name__)
+my_students_bp = Blueprint("my-students", __name__)
+my_records_bp = Blueprint("my-records", __name__)
 
 # Create an instance of CognitoService to interact with Amazon Cognito
 cognito_service = CognitoService()  
@@ -29,7 +36,6 @@ def dashboard():
     user_sub = session.get('user_sub') 
     email = session.get('email')
     user_type= session.get('user_type')
-    print(user_type)
     return render_template('dashboard.html', user_sub=user_sub, email=email, user_type=user_type)
 
 
@@ -161,6 +167,7 @@ def register() -> Union[str, Tuple[str, int]]:
 
             user_sub = response['UserSub']
             s3_service.s3_init_user(user_sub=user_sub)
+            s3_service.s3_init_user_records(user_sub=user_sub)
             # Handle register response with a status code of 200
             return jsonify({'success': True, 'message': 'User registered successfully'}), 200
         except Exception as e:
@@ -200,8 +207,21 @@ def add_workout():
                 return jsonify({"success": False, "message": "User not found"}), 404
 
             workout_plan = request.json.get('workout_plan', [])
+            trainer_sub = session.get('user_sub')
 
-            user_exercise_model = UserExerciseModel(user_sub=user_sub, workout_plan=workout_plan)
+            students_list = s3_service.get_student_list(trainer_sub)
+
+            if not students_list:
+                students_list = []
+
+            if email not in students_list:
+                students_list.append(email)
+
+            trainer_model = TrainerModel(user_sub=trainer_sub, students=students_list)
+            
+            s3_service.add_student_to_list(trainer_model=trainer_model)
+
+            user_exercise_model = UserExerciseModel(user_sub=user_sub, current_trainer=trainer_sub, workout_plan=workout_plan)
 
             if s3_service.s3_update_user_exercise(user_sub, user_exercise_model):
                 return jsonify({"success": True, "message": "Workout added successfully"}), 200
@@ -223,11 +243,13 @@ def my_workouts():
         if user_sub:
             # Retrieve user data from S3
             user_data = s3_service.s3_get_user_data(user_sub)
+            trainer_sub = user_data.get('current_trainer', None)
+            trainer_email = cognito_service.get_user_attrib_by_sub(trainer_sub, 'email')
 
             if user_data:
                 user_type = session.get('user_type')
                 # return jsonify(user_data)
-                return render_template('my_workouts.html', user_data=user_data, user_type=user_type, email=email)
+                return render_template('my_workouts.html', user_data=user_data, user_type=user_type, trainer_email=trainer_email)
             else:
                 return jsonify({'error': 'User data not found'}), 404
         else:
@@ -242,3 +264,114 @@ def my_workouts():
 def logout():
     session.clear()
     return redirect(url_for('login.login'))
+
+
+@my_students_bp.route('/my-students', methods=['GET'])
+@login_required
+def display_my_students():
+    try:
+        user_type = session.get('user_type')
+        if user_type != "Trainer":
+            # If the user is not a Trainer, render a template with the message
+            return render_template('not_allowed.html')
+        # Get the trainer_sub from the current user's session or any other means
+        trainer_sub = session.get('user_sub')
+
+        # Assuming you have an instance of YourClass called 'your_instance'
+        student_list = s3_service.get_student_list(trainer_sub)
+        if not student_list:
+            student_list = []
+
+        # Create a dictionary to store the charts for each student
+        student_charts = []
+
+        # Loop through each student and create a chart for each one
+        for student in student_list:
+            # Fetch the current records from S3 for the student
+            student_sub = cognito_service.get_sub_by_email(student)
+            user_records = s3_service.get_user_records(student_sub)
+            print(student_sub)
+            print(user_records)
+
+            # Create a Plotly line chart
+            chart = go.Figure()
+
+            # Loop through each exercise and add a separate line to the chart for each exercise
+            for exercise in user_records:
+                exercise_name = exercise['name']
+                weights = exercise['weight']
+                chart.add_trace(go.Scatter(x=list(range(len(weights))), y=weights, mode='lines+markers', name=exercise_name))
+
+            # Convert the chart to HTML
+            chart_html = chart.to_html(full_html=False)
+
+            # Add the chart to the dictionary
+            student_charts.append(chart_html)
+
+        # Render the student list and charts in an HTML template
+        email = session.get('email')
+        return render_template('my_students.html', student_list=student_list, trainer_sub=trainer_sub, user_type=user_type, email=email, student_charts=student_charts)
+
+    except Exception as e:
+        log_error(str(e))
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
+    
+
+@my_records_bp.route('/my-records', methods=['GET', 'POST'])
+@login_required
+def my_records():
+    try:
+        if request.method == 'GET':
+            # Display the form
+            email = session.get('email')
+            user_sub = session.get('user_sub')
+            user_type = session.get('user_type')
+
+            # Fetch the current records from S3
+            user_records = s3_service.get_user_records(user_sub)
+            
+            # Create a Plotly line chart
+            chart = go.Figure()
+
+            # Loop through each exercise and add a separate line to the chart for each exercise
+            for exercise in user_records:
+                exercise_name = exercise['name']
+                weights = exercise['weight']
+                chart.add_trace(go.Scatter(x=list(range(len(weights))), y=weights, mode='lines+markers', name=exercise_name))
+
+            # Convert the chart to HTML
+            chart_html = chart.to_html(full_html=False)
+
+            return render_template('my_records.html', user_sub=user_sub, email=email, user_type=user_type, user_records=user_records, chart_html=chart_html)
+
+        elif request.method == 'POST':
+            # Process form submission
+            user_sub = session.get('user_sub')
+            data = request.get_json()
+            exercise_name = data['exercise_name']
+            new_record = float(data['new_record'])
+
+            # Fetch the current records from S3
+            user_records = s3_service.get_user_records(user_sub)
+
+            # Update the specific exercise record
+            for exercise in user_records:
+                if exercise['name'] == exercise_name:
+                    exercise['weight'].append(new_record)
+                    break
+
+            # Create a UserModel instance with updated data
+            updated_user_model = RecordsModel(user_sub=user_sub, records_list=user_records)
+
+            # Update the records in S3
+            success = s3_service.update_user_records(updated_user_model)
+
+            if success:
+                return "Records updated successfully"
+            else:
+                return "Error updating records"
+
+    except Exception as e:
+        log_error(str(e))
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
+    

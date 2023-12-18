@@ -135,6 +135,12 @@ function addExercise(exercisesContainer, dayName) {
 
     numSetsInput.addEventListener('input', function () {
         const numSets = parseInt(numSetsInput.value);
+
+        if (numSets < 0) {
+            // Display an error or handle the invalid input here
+            numSetsInput.value = 0; // Set a default value or handle it as appropriate
+        }
+
         setInputsContainer.innerHTML = '';
 
         for (let i = 1; i <= numSets; i++) {
@@ -146,6 +152,12 @@ function addExercise(exercisesContainer, dayName) {
             repsInput.className = 'form-control';
             repsInput.placeholder = `Reps for Set ${i}`;
             repsInput.name = `reps_set_${dayName}_${i}`; // Include day name in reps_set name
+            repsInput.addEventListener('input', function () {
+                if (repsInput.value < 0) {
+                    // Display an error or handle the invalid input here
+                    repsInput.value = 0; // Set a default value or handle it as appropriate
+                }
+            });
             setContainer.appendChild(repsInput);
 
             const weightInput = document.createElement('input');
@@ -154,6 +166,12 @@ function addExercise(exercisesContainer, dayName) {
             weightInput.placeholder = `Weight for Set ${i}`;
             weightInput.name = `weight_set_${dayName}_${i}`; // Include day name in weight_set name
             weightInput.step = 0.5;
+            weightInput.addEventListener('input', function () {
+                if (weightInput.value < 0) {
+                    // Display an error or handle the invalid input here
+                    weightInput.value = 0; // Set a default value or handle it as appropriate
+                }
+            });
             setContainer.appendChild(weightInput);
 
             setInputsContainer.appendChild(setContainer);
