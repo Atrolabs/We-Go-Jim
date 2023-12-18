@@ -1,9 +1,8 @@
 import boto3
 import json
-from models.models import UserModel, TrainerModel 
+from models.models import UserModel, TrainerModel , UserExerciseModel
 from config.config_loader import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_BUCKET_NAME, AWS_REGION
 from utils.logs_utils import log_error
-from models.models import UserExerciseModel
 
 class S3Service:
     def __init__(self):
@@ -161,16 +160,3 @@ class S3Service:
             print(f"Error uploading trainer data JSON to S3: {str(e)}")
             return False
         
-
-    def add_bench_press_record(self):
-        pass
-
-
-    
-    def add_deadlift_record(self):
-        pass
-
-
-    
-    def add__record(self):
-        pass

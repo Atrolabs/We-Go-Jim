@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from services.cognito_service import CognitoService
+from ..services.cognito_service import CognitoService
 
 
 class TestCognitoService(unittest.TestCase):
@@ -8,7 +8,7 @@ class TestCognitoService(unittest.TestCase):
     @patch('cognito_service.boto3.client')
     def setUp(self, mock_boto_client):
         # Replace 'your_module' with the actual module name where CognitoService is defined
-        self.cognito_service = CognitoService()
+        self.services.cognito_service = CognitoService()
         self.mock_cognito_client = MagicMock()
         mock_boto_client.return_value = self.mock_cognito_client
 

@@ -34,6 +34,3 @@ class UserExerciseModel(UserModel):
 
 class TrainerModel(UserModel):
     students: List[str]
-
-class RecordModel(UserModel):
-     last_modified: str = str(datetime.now(timezone(timedelta(hours=1))).astimezone())
