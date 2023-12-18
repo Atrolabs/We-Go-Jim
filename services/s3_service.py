@@ -55,6 +55,28 @@ class S3Service:
     
 
     def s3_init_user_records(self, user_sub):
+        """
+        Initializes user records in an S3 bucket by creating a RecordsModel instance and uploading its data as JSON.
+
+        Parameters:
+            - user_sub (str): The sub (subject) identifier of the user.
+
+        Returns:
+            - bool: True if the upload is successful, False otherwise.
+
+        Example:
+            ```python
+            cognito_service = CognitoService()
+            user_sub_value = "user123"
+            success = cognito_service.s3_init_user_records(user_sub=user_sub_value)
+            print(success)
+            ```
+
+        Note:
+            - The RecordsModel class must have a method `model_dump` that returns the model data as a dictionary.
+            - Make sure to handle exceptions appropriately when calling this method.
+            - The uploaded data is stored in an S3 bucket with a key based on the user_sub.
+        """
         try:
             # Create a UserModel instance with the provided user_sub
             records_model = RecordsModel(user_sub=user_sub)
@@ -166,6 +188,27 @@ class S3Service:
 
 
     def add_student_to_list(self, trainer_model: TrainerModel):
+        """
+        Adds a TrainerModel instance to a list by converting it to JSON and uploading it to an S3 bucket.
+
+        Parameters:
+            - trainer_model (TrainerModel): The TrainerModel instance to be added to the list.
+
+        Returns:
+            - bool: True if the upload is successful, False otherwise.
+
+        Example:
+            ```python
+            cognito_service = CognitoService()
+            trainer_instance = TrainerModel(...)  # Create a TrainerModel instance
+            success = cognito_service.add_student_to_list(trainer_instance)
+            print(success)
+            ```
+
+        Note:
+            - The TrainerModel class must have a method `model_dump` that returns the model data as a dictionary.
+            - Make sure to handle exceptions appropriately when calling this method.
+        """
         try:
             # Convert TrainerModel to a dictionary
             trainer_data = trainer_model.model_dump()  
