@@ -165,6 +165,7 @@ def register() -> Union[str, Tuple[str, int]]:
 
             user_sub = response['UserSub']
             s3_service.s3_init_user(user_sub=user_sub)
+            s3_service.s3_init_user_records(user_sub=user_sub)
             # Handle register response with a status code of 200
             return jsonify({'success': True, 'message': 'User registered successfully'}), 200
         except Exception as e:

@@ -1,6 +1,6 @@
 import boto3
 import json
-from models.models import UserModel, TrainerModel , UserExerciseModel
+from models.models import UserModel, TrainerModel , UserExerciseModel, RecordsModel
 from config.config_loader import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_BUCKET_NAME, AWS_REGION
 from utils.logs_utils import log_error
 
@@ -41,6 +41,32 @@ class S3Service:
 
             # Define the object key (S3 key) based on user_sub
             object_key = f"user_data/{user_sub}.json"
+
+            # Upload the JSON string to S3
+            self.s3_client.put_object(Body=json_string, Bucket=self.bucket_name, Key=object_key)
+            
+            log_error(f"User data JSON uploaded to S3 bucket '{self.bucket_name}' with key '{object_key}'.")
+            return True
+
+        except Exception as e:
+            log_error(f"Error uploading user data JSON to S3: {str(e)}")
+            return False
+        
+    
+
+    def s3_init_user_records(self, user_sub):
+        try:
+            # Create a UserModel instance with the provided user_sub
+            records_model = RecordsModel(user_sub=user_sub)
+
+            # Convert UserModel to a dictionary
+            user_data = records_model.model_dump()
+
+            # Convert dictionary to JSON string
+            json_string = json.dumps(user_data)
+
+            # Define the object key (S3 key) based on user_sub
+            object_key = f"user_records/{user_sub}.json"
 
             # Upload the JSON string to S3
             self.s3_client.put_object(Body=json_string, Bucket=self.bucket_name, Key=object_key)
@@ -142,7 +168,7 @@ class S3Service:
     def add_student_to_list(self, trainer_model: TrainerModel):
         try:
             # Convert TrainerModel to a dictionary
-            trainer_data = trainer_model.model_dump()  # Assuming you have a method like model_dump() to convert to a dictionary
+            trainer_data = trainer_model.model_dump()  
 
             # Convert dictionary to JSON string
             json_string = json.dumps(trainer_data)

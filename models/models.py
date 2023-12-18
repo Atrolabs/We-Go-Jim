@@ -1,6 +1,6 @@
 from datetime import datetime, timezone, timedelta
 from pydantic import BaseModel
-from typing import List
+from typing import List, Dict
 
 class ExerciseSet(BaseModel):
     number: int
@@ -17,10 +17,10 @@ class DayWorkout(BaseModel):
 
 class UserModel(BaseModel):
     user_sub: str
+    last_modified: str = str(datetime.now(timezone(timedelta(hours=1))).astimezone())
     
 
 class UserExerciseModel(UserModel):
-    last_modified: str = str(datetime.now(timezone(timedelta(hours=1))).astimezone())
     current_trainer: str
     workout_plan: List[DayWorkout] = [
         {"day_name": "Monday", "exercises": []},
@@ -34,3 +34,11 @@ class UserExerciseModel(UserModel):
 
 class TrainerModel(UserModel):
     students: List[str]
+
+
+class RecordsModel(UserModel):
+    records_list: List[Dict] = [
+        {"name": "Bench Press", "weight": []},
+        {"name": "Deadlift", "weight": []},
+        {"name": "Squats", "weight": []}
+    ]
