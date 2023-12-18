@@ -300,6 +300,7 @@ def my_records():
 
             # Fetch the current records from S3
             user_records = s3_service.get_user_records(user_sub)
+            print(user_records)
 
             return render_template('my_records.html', user_sub=user_sub, email=email, user_type=user_type, user_records=user_records)
 
@@ -324,6 +325,11 @@ def my_records():
 
             # Update the records in S3
             success = s3_service.update_user_records(updated_user_model)
+
+            print(user_records)
+            print(updated_user_model)
+            print(new_record)
+            print(exercise_name)
 
             if success:
                 return "Records updated successfully"
