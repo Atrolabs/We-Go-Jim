@@ -281,9 +281,36 @@ def display_my_students():
         student_list = s3_service.get_student_list(trainer_sub)
         if not student_list:
             student_list = []
-        # Render the student list in an HTML template
+
+        # Create a dictionary to store the charts for each student
+        student_charts = []
+
+        # Loop through each student and create a chart for each one
+        for student in student_list:
+            # Fetch the current records from S3 for the student
+            student_sub = cognito_service.get_sub_by_email(student)
+            user_records = s3_service.get_user_records(student_sub)
+            print(student_sub)
+            print(user_records)
+
+            # Create a Plotly line chart
+            chart = go.Figure()
+
+            # Loop through each exercise and add a separate line to the chart for each exercise
+            for exercise in user_records:
+                exercise_name = exercise['name']
+                weights = exercise['weight']
+                chart.add_trace(go.Scatter(x=list(range(len(weights))), y=weights, mode='lines+markers', name=exercise_name))
+
+            # Convert the chart to HTML
+            chart_html = chart.to_html(full_html=False)
+
+            # Add the chart to the dictionary
+            student_charts.append(chart_html)
+
+        # Render the student list and charts in an HTML template
         email = session.get('email')
-        return render_template('my_students.html', student_list=student_list, trainer_sub=trainer_sub, user_type=user_type, email=email)
+        return render_template('my_students.html', student_list=student_list, trainer_sub=trainer_sub, user_type=user_type, email=email, student_charts=student_charts)
 
     except Exception as e:
         log_error(str(e))
@@ -338,7 +365,7 @@ def my_records():
 
             # Update the records in S3
             success = s3_service.update_user_records(updated_user_model)
-            
+
             if success:
                 return "Records updated successfully"
             else:

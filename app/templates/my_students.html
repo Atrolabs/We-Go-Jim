@@ -14,7 +14,15 @@
         {% if student_list %}
             <ul>
                 {% for student in student_list %}
-                    <li class="student-list-item">{{ student }}</li>
+                    <li class="student-list-item">
+                        {{ student }}
+                        <!-- Display the chart for the student -->
+                        <div class="chart-container">
+                            <!-- {% for chart in student_charts %} -->
+                            {{ student_charts }}
+                            <!-- {% endfor %} -->
+                        </div>
+                    </li>
                 {% endfor %}
             </ul>
         {% else %}
