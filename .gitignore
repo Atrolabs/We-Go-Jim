@@ -157,3 +157,4 @@ terraform.d/plugins/*
 
 # Ignore crash log files
 crash.log
+/animation
