@@ -29,6 +29,8 @@
         <input type="number" id="squats" placeholder="Enter your new record" oninput="validateInput(this)" min="0">
         <button type="button">Submit</button>
     </div>
+
+    {{ chart_html|safe }}
 </div>
 <script src="../static/js/my_records.js"></script>
 {% endblock %}
