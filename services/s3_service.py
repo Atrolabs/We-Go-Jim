@@ -186,3 +186,57 @@ class S3Service:
             print(f"Error uploading trainer data JSON to S3: {str(e)}")
             return False
         
+
+    def get_user_records(self, user_sub):
+        """
+        Retrieves the fitness records for the specified user from the S3 bucket.
+
+        :param user_sub: The user_sub variable to include in the object key.
+        :return: The list of fitness records as a list of dictionaries if the download is successful, None otherwise.
+        """
+        try:
+            # Define the object key (S3 key) for the user's JSON file based on user_sub
+            object_key = f"user_records/{user_sub}.json"
+
+            # Download the JSON file from S3
+            response = self.s3_client.get_object(Bucket=self.bucket_name, Key=object_key)
+
+            # Parse the JSON string
+            user_data_json = response['Body'].read().decode('utf-8')
+            user_data = json.loads(user_data_json)
+
+            # Retrieve and return the fitness records list from the user's data
+            records_list = user_data.get('records_list', [])
+            return records_list
+
+        except Exception as e:
+            log_error(f"Error retrieving fitness records JSON from S3: {str(e)}")
+            return None
+        
+
+    def update_user_records(self, records_model: RecordsModel):
+        """
+        Updates the fitness records for the specified user in the S3 bucket.
+
+        :param user_model: An instance of the RecordsModel containing the updated fitness records.
+        :return: True if the update is successful, False otherwise.
+        """
+        try:
+            # Convert RecordsModel to a dictionary
+            user_data = records_model.model_dump()
+
+            # Convert dictionary to JSON string
+            json_string = json.dumps(user_data)
+
+            # Define the object key (S3 key) based on the user's identifier
+            object_key = f"user_records/{records_model.user_sub}.json"
+
+            # Upload the JSON string to S3
+            self.s3_client.put_object(Body=json_string, Bucket=self.bucket_name, Key=object_key)
+
+            log_error(f"User data JSON updated on S3 bucket '{self.bucket_name}' with key '{object_key}'.")
+            return True
+
+        except Exception as e:
+            log_error(f"Error updating user data JSON on S3: {str(e)}")
+            return False

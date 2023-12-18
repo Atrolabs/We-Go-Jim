@@ -7,7 +7,7 @@ from typing import Union, Tuple
 
 from utils.cognito_utils import decode_cognito_jwt, login_required
 from utils.logs_utils import configure_logging, log_error
-from models.models import UserExerciseModel, TrainerModel
+from models.models import UserExerciseModel, TrainerModel, RecordsModel
 
 configure_logging()
 
@@ -288,16 +288,48 @@ def display_my_students():
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
     
 
-@my_records_bp.route('/my-records', methods=['GET'])
+@my_records_bp.route('/my-records', methods=['GET', 'POST'])
 @login_required
 def my_records():
     try:
-        email = session.get('email')
-        user_sub = session.get('user_sub')
-        user_type = session.get('user_type')
+        if request.method == 'GET':
+            # Display the form
+            email = session.get('email')
+            user_sub = session.get('user_sub')
+            user_type = session.get('user_type')
 
+            # Fetch the current records from S3
+            user_records = s3_service.get_user_records(user_sub)
 
-        return render_template('my_records.html', user_sub=user_sub, email=email, user_type=user_type)
+            return render_template('my_records.html', user_sub=user_sub, email=email, user_type=user_type, user_records=user_records)
+
+        elif request.method == 'POST':
+            # Process form submission
+            user_sub = session.get('user_sub')
+            data = request.get_json()
+            exercise_name = data['exercise_name']
+            new_record = float(data['new_record'])
+
+            # Fetch the current records from S3
+            user_records = s3_service.get_user_records(user_sub)
+
+            # Update the specific exercise record
+            for exercise in user_records:
+                if exercise['name'] == exercise_name:
+                    exercise['weight'].append(new_record)
+                    break
+
+            # Create a UserModel instance with updated data
+            updated_user_model = RecordsModel(user_sub=user_sub, records_list=user_records)
+
+            # Update the records in S3
+            success = s3_service.update_user_records(updated_user_model)
+
+            if success:
+                return "Records updated successfully"
+            else:
+                return "Error updating records"
+
     except Exception as e:
         log_error(str(e))
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
