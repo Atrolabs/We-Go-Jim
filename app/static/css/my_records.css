@@ -40,11 +40,6 @@ input {
     box-sizing: border-box;
 }
 
-.current-record {
-    color: #7a5eb5;
-    margin-bottom: 8px;
-}
-
 button {
     background-color: #7a5eb5;
     color: #ffffff;
