@@ -374,3 +374,4 @@ def my_records():
     except Exception as e:
         log_error(str(e))
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
+    

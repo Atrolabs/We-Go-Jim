@@ -3,6 +3,7 @@
 {% block title %}Student List{% endblock %}
 
 {% block additional_styles %}
+    <meta charset="UTF-8">
     <meta name="description" content="Student List - a list of students for the trainer.">
     <title>Student List</title>
     <link rel="stylesheet" href="../static/css/my_students.css">
@@ -13,14 +14,12 @@
         <h1>Student List for {{ email }}</h1>
         {% if student_list %}
             <ul>
-                {% for student in student_list %}
+                {% for i in range(student_list|length) %}
                     <li class="student-list-item">
-                        {{ student }}
+                        {{ student_list[i] }}
                         <!-- Display the chart for the student -->
                         <div class="chart-container">
-                            <!-- {% for chart in student_charts %} -->
-                            {{ student_charts }}
-                            <!-- {% endfor %} -->
+                            {{ student_charts[i] | safe }}
                         </div>
                     </li>
                 {% endfor %}
