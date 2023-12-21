@@ -1,6 +1,10 @@
 # We Go Jim
 
 
+# Access the webiste under the following link:
+http://wegojim.atrolabs.com:5000/
+
+
 ## Created by
 
 - [Adam Kuszczyński](https://github.com/juhum)
